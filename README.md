@@ -11,3 +11,5 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 ## Execution
 
 1. To generate the .NET package, run from the root of the repo: `openapi-generator-cli generate -i schemas/api.github.com/api.github.com.2022-11-28.json -t templates/dotnet -g csharp -o generated/dotnet -p packageName=Octokit`. Alternately, you may run the provided script `generate.sh`.
+
+1. To build the .NET package, change directories into generated/dotnet and run `chmod +x build.sh`, followed by `./build.sh`.
