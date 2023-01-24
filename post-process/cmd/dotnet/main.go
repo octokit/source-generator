@@ -11,7 +11,6 @@ func main() {
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func run() error {
@@ -21,7 +20,6 @@ func run() error {
 	filename := os.Args[1]
 	log.Printf("running post processing on file %v", filename)
 
-	// open file
 	fileBytes, err := os.ReadFile(filename)
 	if err != nil {
 		return err
@@ -42,7 +40,8 @@ func run() error {
 	return nil
 }
 
-// fixDoubleStarProperties returns the input string with
+// fixDoubleStarProperties fixes generated enums where "*" and "Star" are
+// both webhook events parsed as "Star"
 func fixDoubleStarProperties(inputFile string) (string, error) {
 	if len(inputFile) < 1 {
 		return "", fmt.Errorf("inputFile must not be empty")
