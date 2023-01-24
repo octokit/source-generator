@@ -31,7 +31,12 @@ func run() error {
 		return err
 	}
 
-	// todo(kfcampbell): verify file permission is what we want
+	file, err = fixDoubleBlankProperties(file)
+	if err != nil {
+		return err
+	}
+
+	// TODO(kfcampbell): verify file permission is what we want
 	err = os.WriteFile(filename, []byte(file), 0666)
 	if err != nil {
 		return err
@@ -52,5 +57,37 @@ func fixDoubleStarProperties(inputFile string) (string, error) {
 
 	// find instances of "            Star = 1," and replace with "            All = 1,"
 	inputFile = strings.ReplaceAll(inputFile, "            Star = 1,", "            All = 1,")
+	return inputFile, nil
+}
+
+// fixDoubleBlankProperties removes one of the two BLANK enum properties from Repository11.cs
+// TODO(kfcampbell): attempt to figure out where this is defined inside GitHub and PR it
+func fixDoubleBlankProperties(inputFile string) (string, error) {
+	if len(inputFile) < 1 {
+		return "", fmt.Errorf("inputFile must not be empty")
+	}
+
+	toReplace := `/// <summary>
+            /// Enum BLANK for value: BLANK
+            /// </summary>
+            [EnumMember(Value = "BLANK")]
+            BLANK = 3,
+
+            /// <summary>
+            /// Enum BLANK for value: BLANK
+            /// </summary>
+            [EnumMember(Value = "BLANK")]
+            BLANK = 4
+`
+
+	// replace duplicate blanks if they exist
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, `/// <summary>
+            /// Enum BLANK for value: BLANK
+            /// </summary>
+            [EnumMember(Value = "BLANK")]
+            BLANK = 3
+		`)
+	}
 	return inputFile, nil
 }
