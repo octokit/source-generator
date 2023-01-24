@@ -116,7 +116,6 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
             /// </summary>
             [EnumMember(Value = "-1")]
             _1 = 2,`
-
 	replaceWith := `/// <summary>
             /// Enum ThumbsUp for value: +1
             /// </summary>
@@ -151,7 +150,6 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
 
 	toReplace = `_1 = _1;
             _1 = _1;`
-
 	replaceWith = `ThumbsUp = thumbsUp;
             ThumbsDown = thumbsDown;`
 
@@ -167,7 +165,6 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
         /// Gets and Sets _1
         /// </summary>
         public int _1 { get; private set; }`
-
 	replaceWith = `        /// <summary>
         /// Gets and Sets ThumbsUp
         /// </summary>
@@ -192,7 +189,6 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
 
 	toReplace = `sb.Append("  _1: ").Append(_1).Append("\n");
             sb.Append("  _1: ").Append(_1).Append("\n");`
-
 	replaceWith = `sb.Append("  ThumbsUp: ").Append(ThumbsUp).Append("\n");
             sb.Append("  ThumbsDown: ").Append(ThumbsDown).Append("\n");`
 
@@ -200,5 +196,19 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
+	toReplace = `/// <summary>
+            /// Enum _1 for value: +1
+            /// </summary>
+            [EnumMember(Value = "+1")]
+            _1 = 1,`
+	replaceWith = `/// <summary>
+            /// Enum ThumbsUp for value: +1
+            /// </summary>
+            [EnumMember(Value = "+1")]
+            ThumbsUp = 1,`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
 	return inputFile, nil
 }
