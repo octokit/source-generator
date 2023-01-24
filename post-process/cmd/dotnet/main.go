@@ -36,6 +36,11 @@ func run() error {
 		return err
 	}
 
+	file, err = fixThumbsUpThumbsDownProperties(file)
+	if err != nil {
+		return err
+	}
+
 	// TODO(kfcampbell): verify file permission is what we want
 	err = os.WriteFile(filename, []byte(file), 0666)
 	if err != nil {
@@ -89,5 +94,97 @@ func fixDoubleBlankProperties(inputFile string) (string, error) {
             BLANK = 3
 		`)
 	}
+	return inputFile, nil
+}
+
+func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
+	if len(inputFile) < 1 {
+		return "", fmt.Errorf("inputFile must not be empty")
+	}
+
+	// conditions for needing to fix thumbs up/thumbs down issue:
+	// filename contains "Reaction"
+
+	toReplace := `/// <summary>
+            /// Enum _1 for value: +1
+            /// </summary>
+            [EnumMember(Value = "+1")]
+            _1 = 1,
+
+            /// <summary>
+            /// Enum _1 for value: -1
+            /// </summary>
+            [EnumMember(Value = "-1")]
+            _1 = 2,`
+
+	replaceWith := `/// <summary>
+            /// Enum ThumbsUp for value: +1
+            /// </summary>
+            [EnumMember(Value = "+1")]
+            ThumbsUp = 1,
+
+            /// <summary>
+            /// Enum ThumbsDown for value: -1
+            /// </summary>
+            [EnumMember(Value = "-1")]
+            ThumbsDown = 2,`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `/// <param name="_1">_1.</param>
+        /// <param name="_1">_1.</param>`
+	replaceWith = `/// <param name="thumbsUp">thumbsUp.</param>
+        /// <param name="thumbsDown">thumbsDown.</param>`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = "int _1 = default(int), int _1 = default(int)"
+	replaceWith = "int thumbsUp = default(int), int thumbsDown = default(int)"
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `_1 = _1;
+            _1 = _1;`
+
+	replaceWith = `ThumbsUp = thumbsUp;
+            ThumbsDown = thumbsDown;`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `        /// <summary>
+        /// Gets and Sets _1
+        /// </summary>
+        public int _1 { get; private set; }
+        /// <summary>
+        /// Gets and Sets _1
+        /// </summary>
+        public int _1 { get; private set; }`
+
+	replaceWith = `        /// <summary>
+        /// Gets and Sets ThumbsUp
+        /// </summary>
+        public int ThumbsUp { get; private set; }
+        /// <summary>
+        /// Gets and Sets ThumbsDown
+        /// </summary>
+        public int ThumbsDown { get; private set; }`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `sb.Append("  _1: ").Append(_1).Append("\n");
+            sb.Append("  _1: ").Append(_1).Append("\n");`
+
+	replaceWith = `sb.Append("  ThumbsUp: ").Append(ThumbsUp).Append("\n");
+            sb.Append("  ThumbsDown: ").Append(ThumbsDown).Append("\n");`
 	return inputFile, nil
 }
