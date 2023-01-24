@@ -181,10 +181,24 @@ func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
+	toReplace = `        /// <param name="_1">_1 (required).</param>
+        /// <param name="_1">_1 (required).</param>`
+	replaceWith = `        /// <param name="thumbsUp">thumbsUp (required).</param>
+        /// <param name="thumbsDown">thumbsDown (required).</param>`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
 	toReplace = `sb.Append("  _1: ").Append(_1).Append("\n");
             sb.Append("  _1: ").Append(_1).Append("\n");`
 
 	replaceWith = `sb.Append("  ThumbsUp: ").Append(ThumbsUp).Append("\n");
             sb.Append("  ThumbsDown: ").Append(ThumbsDown).Append("\n");`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
 	return inputFile, nil
 }
