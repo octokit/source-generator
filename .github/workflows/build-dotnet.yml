@@ -1,0 +1,38 @@
+name: "Build dotnet generated SDK"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x.x'
+
+      - name: Install prerequisites
+        run: |
+          npm i -g @openapitools/openapi-generator-cli
+
+      - name: Create .NET SDK
+        run: |
+          openapi-generator-cli generate -i schemas/api.github.com/api.github.com.2022-11-28.json -t templates/dotnet -g csharp -o generated/dotnet -p packageName=Octokit
+
+      - name: Build .NET SDK
+        run: |
+          cd generated/dotnet
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Test .NET SDK
+        run: |
+          chmod +x mono_nunit_test.sh
+          ./mono_nunit_test.sh
