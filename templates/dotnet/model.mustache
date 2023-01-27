@@ -1,3 +1,4 @@
+{{! Header pattern derived from: https://github.com/swagger-api/swagger-codegen/blob/master/modules/swagger-codegen/src/main/resources/csharp/partial_header.mustache}}
 {{>partial_header}}
 
 {{#models}}
@@ -15,7 +16,16 @@ using System.Globalization;
 
 namespace {{packageName}}.{{modelPackage}}
 {
-{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{^isEnum}}{{^oneOf}}{{^anyOf}}{{>modelBasic}}{{/anyOf}}{{/oneOf}}{{/isEnum}}
+{{! modelEnum pattern derived from:  https://github.com/swagger-api/swagger-codegen/blob/master/modules/swagger-codegen/src/main/resources/csharp/modelEnum.mustache}}
+{{! modelGeneric pattern derived from: https://github.com/swagger-api/swagger-codegen/blob/master/modules/swagger-codegen/src/main/resources/csharp/modelGeneric.mustache}}
+{{#isEnum}}{{>modelEnum}}{{/isEnum}}
+{{^isEnum}}
+{{#oneOf}}{{#-first}}{{>modelGeneric}}{{/-first}}{{/oneOf}}
+{{#anyOf}}{{#-first}}{{>modelGeneric}}{{/-first}}{{/anyOf}}
+{{^oneOf}}{{^anyOf}}{{>modelGeneric}}{{/anyOf}}{{/oneOf}}
+{{/isEnum}}
+
+
 {{/model}}
 {{/models}}
 }
