@@ -1,0 +1,35 @@
+{{#model}}
+    /// <summary>
+    /// {{description}}{{^description}}{{classname}}{{/description}}
+    /// </summary>
+    {{>visibility}} class {{classname}} 
+    {
+        {{#isNullable}}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="{{classname}}" /> class.
+        /// Generated from the OneOf template
+        /// </summary>
+        public {{classname}}()
+        {
+            this.IsNullable = true;
+        }
+
+        {{/isNullable}}
+
+        {{! https://javadoc.io/static/io.swagger.core.v3/swagger-models/2.1.10/io/swagger/v3/oas/models/media/ComposedSchema.html}}
+        {{#composedSchemas.oneOf}}
+        {{^isNull}}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="{{classname}}" /> class
+        /// with the <see cref="{{#lambdaCref}}{{{dataType}}}{{/lambdaCref}}" /> class
+        /// </summary>
+        /// <param name="actualInstance">An instance of {{dataType}}.</param>
+        public {{classname}}({{{dataType}}} actualInstance)
+        {
+            {{! TODO: I have no idea what props we need to add here to support a oneOf instance.  Do we need to consider instances, construction, model validation?}}
+            this.IsNullable = {{#model.isNullable}}true{{/model.isNullable}}{{^model.isNullable}}false{{/model.isNullable}};
+        }
+        {{/isNull}}
+        {{/composedSchemas.oneOf}}
+    }
+{{/model}}

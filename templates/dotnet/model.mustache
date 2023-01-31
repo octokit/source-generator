@@ -20,7 +20,7 @@ namespace {{packageName}}.{{modelPackage}}
 {{! modelGeneric pattern derived from: https://github.com/swagger-api/swagger-codegen/blob/master/modules/swagger-codegen/src/main/resources/csharp/modelGeneric.mustache}}
 {{#isEnum}}{{>modelEnum}}{{/isEnum}}
 {{^isEnum}}
-{{#oneOf}}{{#-first}}{{>modelGeneric}}{{/-first}}{{/oneOf}}
+{{#oneOf}}{{#-first}}{{>modelOneOf}}{{/-first}}{{/oneOf}}
 {{#anyOf}}{{#-first}}{{>modelGeneric}}{{/-first}}{{/anyOf}}
 {{^oneOf}}{{^anyOf}}{{>modelGeneric}}{{/anyOf}}{{/oneOf}}
 {{/isEnum}}
