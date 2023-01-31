@@ -28,7 +28,7 @@
         /// <param name="someInstance">An instance of {{dataType}}.</param>
         public {{classname}}({{{dataType}}} someInstance)
         {
-            {{! TODO: I have no idea what props we need to add here to support a oneOf instance.  Do we need to consider instances, construction, model validation?}}
+            {{! TODO: I have no idea what props we need to add here to support a AllOf instance.  Do we need to consider instances, construction, model validation?}}
             this.IsNullable = {{#model.isNullable}}true{{/model.isNullable}}{{^model.isNullable}}false{{/model.isNullable}};
         }
         {{/isNull}}

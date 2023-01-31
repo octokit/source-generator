@@ -4,6 +4,9 @@
     /// </summary>
     {{>visibility}} class {{classname}} 
     {
+
+        private Object _assignedInstance; // TODO: All interactions with this should be type checked this.GetType()
+
         {{#isNullable}}
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}" /> class.
@@ -12,6 +15,7 @@
         public {{classname}}()
         {
             this.IsNullable = true;
+            //TODO: assign type placeholder 
         }
 
         {{/isNullable}}
@@ -25,13 +29,51 @@
         /// </summary>
         {{! TODO: we could use a decomposed builder patten here or passing an instance (ref type) here might be a good pattern too. We need to be}}
         {{! cautious of when these xOf types cam be simple value types - whatever the case, stuggling with naming this thing.}}
-        /// <param name="someInstance">An instance of {{dataType}}.</param>
-        public {{classname}}({{{dataType}}} someInstance)
+        /// <param name="AssignedInstance">An instance of {{dataType}}.</param>
+        public {{classname}}({{{dataType}}} AssignedInstance)
         {
             {{! TODO: I have no idea what props we need to add here to support a oneOf instance.  Do we need to consider instances, construction, model validation?}}
             this.IsNullable = {{#model.isNullable}}true{{/model.isNullable}}{{^model.isNullable}}false{{/model.isNullable}};
+            //TODO: assign type placeholder
         }
         {{/isNull}}
         {{/composedSchemas.oneOf}}
+
+        /// <summary>
+        /// Gets or Sets AssignedInstance
+        /// </summary>
+        public override Object AssignedInstance
+        {
+            get
+            {
+                return _assignedInstance;
+            }
+            set
+            {
+                {{#oneOf}}
+                {{^-first}}else {{/-first}}if (value.GetType() == typeof({{{.}}}))
+                {
+                    this._assignedInstance = value;
+                }
+                {{/oneOf}}
+                else
+                {
+                    // We need to throw some sort of type exception here - if users are trying to assign an object that is not of type this and is not OneOf
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the string presentation of the object
+        /// </summary>
+        /// <returns>String presentation of the object</returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("class {{classname}} {\n");
+            sb.Append("  AssignedInstance: ").Append(this.AssignedInstance).Append("\n");
+            sb.Append("}\n");
+            return sb.ToString();
+        }
     }
 {{/model}}
