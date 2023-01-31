@@ -7,7 +7,7 @@
         {{#isNullable}}
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}" /> class.
-        /// Generated from the OneOf template
+        /// Generated from the AllOf template
         /// </summary>
         public {{classname}}()
         {
@@ -17,7 +17,7 @@
         {{/isNullable}}
 
         {{! https://javadoc.io/static/io.swagger.core.v3/swagger-models/2.1.10/io/swagger/v3/oas/models/media/ComposedSchema.html}}
-        {{#composedSchemas.oneOf}}
+        {{#composedSchemas.allOf}}
         {{^isNull}}
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}" /> class
@@ -32,6 +32,6 @@
             this.IsNullable = {{#model.isNullable}}true{{/model.isNullable}}{{^model.isNullable}}false{{/model.isNullable}};
         }
         {{/isNull}}
-        {{/composedSchemas.oneOf}}
+        {{/composedSchemas.allOf}}
     }
 {{/model}}
