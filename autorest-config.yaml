@@ -1,0 +1,15 @@
+# https://github.com/Azure/autorest/blob/d5d71d89acfee1a950fad3fbf26d0f627256e270/docs/user/configuration.md
+
+# file config
+input-file: schemas/api.github.com/api.github.com.json
+clear-output-folder: true
+output-folder: generated/csharp
+log-file: generated/autorest_log.txt
+
+# generator config
+namespace: Octokit
+
+# modelerfour config
+# Options: https://github.com/Azure/autorest/tree/main/packages/extensions/modelerfour
+modelerfour:
+  lenient-model-deduplication: true

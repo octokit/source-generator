@@ -20,3 +20,8 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 
 1. `npm install -g autorest`
 2. autorest --use:@autorest/csharp@3.0.0-beta.20210210.4 --input-file:schemas/api.github.com/api.github.com.json  --clear-output-folder:true --output-folder:generated --namespace=Octokit
+
+
+#### Run with config
+
+1. autorest autorest-config.yaml --use:@autorest/csharp@3.0.0-beta.20210210.4
