@@ -3,13 +3,12 @@
 # file config
 input-file: schemas/api.github.com/api.github.com.json
 clear-output-folder: true
-output-folder: generated/csharp
+output-folder: ./generated/csharp
 log-file: generated/autorest_log.txt
 
 # generator config
 namespace: Octokit
 use: "@autorest/csharp@3.0.0-beta.20210210.4"
-clear-output-folder: true
 
 # modelerfour config
 # Options: https://github.com/Azure/autorest/tree/main/packages/extensions/modelerfour
