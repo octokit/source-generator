@@ -1,9 +1,11 @@
 # https://github.com/Azure/autorest/blob/d5d71d89acfee1a950fad3fbf26d0f627256e270/docs/user/configuration.md
 
 # file config
-#input-file: schemas/api.github.com/api.github.com.json
+input-file: schemas/api.github.com/api.github.com.2022-11-28.json
 #input-file: api.github.com.no.webhooks.json
-input-file: schemas/api.github.com/experiment.json
+#input-file: schemas/api.github.com/api.github.com.no.webhooks.deref.json
+#input-file: schemas/api.github.com/experiment.json
+#input-file: schemas/api.github.com/experiment.deref.json
 clear-output-folder: true
 output-folder: generated
 log-file: generated/autorest_log.txt
