@@ -3,7 +3,7 @@
 # file config
 #input-file: schemas/api.github.com/api.github.com.json
 #input-file: api.github.com.no.webhooks.json
-input-file: schemas/experiment.json
+input-file: schemas/api.github.com/experiment.json
 clear-output-folder: true
 output-folder: generated
 log-file: generated/autorest_log.txt
