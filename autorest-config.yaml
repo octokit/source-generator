@@ -1,7 +1,7 @@
 # https://github.com/Azure/autorest/blob/d5d71d89acfee1a950fad3fbf26d0f627256e270/docs/user/configuration.md
 
 # file config
-input-file: schemas/api.github.com/api.github.com.json
+input-file: schemas/updated/experiment.json
 clear-output-folder: true
 output-folder: generated
 log-file: generated/autorest_log.txt
