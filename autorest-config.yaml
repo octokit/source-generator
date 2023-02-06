@@ -1,10 +1,10 @@
 # https://github.com/Azure/autorest/blob/d5d71d89acfee1a950fad3fbf26d0f627256e270/docs/user/configuration.md
 
 # file config
-input-file: schemas/updated/api.github.com.yaml
+input-file: schemas/updated/api.github.com.json
 clear-output-folder: true
-output-folder: generated
-log-file: generated/autorest_log.txt
+# output-folder: generated
+log-file: autorest_log.txt
 
 # generator config
 namespace: Octokit
