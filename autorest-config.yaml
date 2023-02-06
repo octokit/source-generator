@@ -3,12 +3,17 @@
 # file config
 input-file: schemas/updated/api.github.com.json
 clear-output-folder: true
-# output-folder: generated
 log-file: autorest_log.txt
 
 # generator config
-namespace: Octokit
-use: "@autorest/csharp@3.0.0-beta.20230201.2"
+csharp:
+  namespace: Octokit
+  use: "@autorest/csharp@3.0.0-beta.20230201.2"
+  output-folder: generated/dotnet
+
+go:
+  namespace: octokit
+  output-folder: generated/go
 
 # modelerfour config
 # Options: https://github.com/Azure/autorest/tree/main/packages/extensions/modelerfour
@@ -16,8 +21,8 @@ modelerfour:
   additional-checks: true
   emit-yaml-tags: false
   naming:
-      override: # defaults
-        $host: api.github.com
+    override: # defaults
+      $host: api.github.com
   # this runs a pre-namer step to clean up names
   # defaults to true if not specified
   prenamer: true
@@ -32,3 +37,6 @@ modelerfour:
   # removed in a future release!
   lenient-model-deduplication: true
   resolve-schema-name-collisons: true
+  # the default preference for modeler-four based generators is to deduplicate inline models fully.
+  # this may impact performance on extremely large models with a lot of inline schemas.
+  deduplicate-inline-models: false
