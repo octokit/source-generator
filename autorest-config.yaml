@@ -2,14 +2,14 @@
 
 # file config
 input-file: schemas/updated/api.github.com.json
-clear-output-folder: true
+clear-output-folder: false
 log-file: autorest_log.txt
 
 # generator config
-csharp:
-  namespace: Octokit
-  use: "@autorest/csharp@3.0.0-beta.20230201.2"
-  output-folder: generated/dotnet
+# csharp:
+#   namespace: Octokit
+#   use: "@autorest/csharp@3.0.0-beta.20230206.4"
+#   output-folder: generated/dotnet
 
 go:
   namespace: octokit
