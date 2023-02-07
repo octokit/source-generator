@@ -6,10 +6,10 @@ clear-output-folder: false
 log-file: autorest_log.txt
 
 # generator config
-# csharp:
-#   namespace: Octokit
-#   use: "@autorest/csharp@3.0.0-beta.20230206.4"
-#   output-folder: generated/dotnet
+csharp:
+  namespace: Octokit
+  use: "@autorest/csharp@3.0.0-beta.20230206.4"
+  output-folder: generated/dotnet
 
 go:
   namespace: octokit

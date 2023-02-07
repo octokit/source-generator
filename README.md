@@ -18,7 +18,7 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 ### For AutoREST
 
 1. `npm install -g autorest`
-1. `time autorest autorest-config.yaml --debug --verbose` from the repo root
+1. `time autorest autorest-config.yaml --csharp --debug --verbose` from the repo root for Go, and `time autorest autorest-config.yaml --go --debug --verbose`
 
 Notes:
 
