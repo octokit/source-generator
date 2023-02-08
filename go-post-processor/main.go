@@ -126,8 +126,8 @@ func fixDuplicateValueInEnums(inputFile string) string {
 
 	// important! this regex must be run _after_ the above possibleVals regex,
 	// otherwise the possibleVals regex will not match anything.
-	singleThumbsUpPossibleValues := regexp.MustCompile(`Enum(\d{1,3})1`)
-	inputFile = singleThumbsUpPossibleValues.ReplaceAllString(inputFile, `Enum${1}ThumbsUp`)
+	singleThumbsUpPossibleValues := regexp.MustCompile(`Enum(\d{1,3})1,(\n\t+)`)
+	inputFile = singleThumbsUpPossibleValues.ReplaceAllString(inputFile, `Enum${1}ThumbsUp,${2}`)
 
 	reactionsThumbsUp := regexp.MustCompile(`Enum(\d{1,3})Reactions1 Enum\d{1,3} = ("reactions-\+1")`)
 	inputFile = reactionsThumbsUp.ReplaceAllString(inputFile, `Enum${1}ReactionsThumbsUp Enum${1} = ${2}`)
