@@ -264,6 +264,14 @@ func fixThumbsUpThumbsDownProperties(inputFile string) string {
 
 	/*
 		case "+1":
+					err = unpopulate(val, "1", &w.ThumbsUp)
+					delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "1", &w.ThumbsDown)
+	*/
+
+	/*
+		case "+1":
 				err = unpopulate(val, "1", &w.1)
 				delete(rawMsg, key)
 		case "-1":
@@ -281,10 +289,10 @@ func fixThumbsUpThumbsDownProperties(inputFile string) string {
 
 	replaceWith = `
 		case "+1":
-				err = unpopulate(val, "1", &w.ThumbsUp)
+				err = unpopulate(val, "+1", &w.ThumbsUp)
 				delete(rawMsg, key)
 		case "-1":
-				err = unpopulate(val, "1", &w.ThumbsDown)
+				err = unpopulate(val, "-1", &w.ThumbsDown)
 				delete(rawMsg, key)
 	`
 
