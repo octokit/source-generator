@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -51,6 +52,8 @@ func run() error {
 
 		fileContents = fixPackageNaming(fileContents, packageName)
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
+		fileContents = fixDuplicateValueInEnums(fileContents)
+		fileContents = fixClientWorkflowIDErrors(fileContents)
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(fmt.Sprintf("%v/%v/%v", outputDirName, packageName, file.Name()), []byte(fileContents), 0666)
@@ -97,6 +100,56 @@ func fixPackageNaming(inputFile string, packageName string) string {
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
+	return inputFile
+}
+
+func fixClientWorkflowIDErrors(inputFile string) string {
+	removeStruct := regexp.MustCompile(`type Components.*ParametersWorkflowIDSchema struct {\n}\n\n\n`)
+	inputFile = removeStruct.ReplaceAllString(inputFile, `\n`) // just delete it
+
+	// important! this regex must be run _after_ the above removeStruct regex,
+	// otherwise the removeStruct regex will not match anything
+	makeString := regexp.MustCompile(`Components.*ParametersWorkflowIDSchema`)
+	inputFile = makeString.ReplaceAllString(inputFile, `string`)
+	return inputFile
+}
+
+func fixDuplicateValueInEnums(inputFile string) string {
+	thumbsUp := regexp.MustCompile(`Enum\d+ (Enum(\d+)) = ("\+1")`)
+	thumbsDown := regexp.MustCompile(`Enum\d+ (Enum(\d+)) = ("\-1")`)
+
+	inputFile = thumbsUp.ReplaceAllString(inputFile, `Enum${2}ThumbsUp ${1} = ${3}`)
+	inputFile = thumbsDown.ReplaceAllString(inputFile, `Enum${2}ThumbsDown ${1} = ${3}`)
+
+	possibleVals := regexp.MustCompile(`Enum(\d{1,3})1,(\n\t+)Enum\d{1,3}1`)
+	inputFile = possibleVals.ReplaceAllString(inputFile, `Enum${1}ThumbsUp,${2}Enum${1}ThumbsDown`)
+
+	// important! this regex must be run _after_ the above possibleVals regex,
+	// otherwise the possibleVals regex will not match anything.
+	singleThumbsUpPossibleValues := regexp.MustCompile(`Enum(\d{1,3})1`)
+	inputFile = singleThumbsUpPossibleValues.ReplaceAllString(inputFile, `Enum${1}ThumbsUp`)
+
+	reactionsThumbsUp := regexp.MustCompile(`Enum(\d{1,3})Reactions1 Enum\d{1,3} = ("reactions-\+1")`)
+	inputFile = reactionsThumbsUp.ReplaceAllString(inputFile, `Enum${1}ReactionsThumbsUp Enum${1} = ${2}`)
+
+	reactionsThumbsDown := regexp.MustCompile(`Enum(\d{1,3})Reactions1 Enum\d{1,3} = ("reactions--1")`)
+	inputFile = reactionsThumbsDown.ReplaceAllString(inputFile, `Enum${1}ReactionsThumbsDown Enum${1} = ${2}`)
+
+	reactionsPossibleVals := regexp.MustCompile(`Enum(\d{1,3})Reactions1,(\n\t+)Enum\d{1,3}Reactions1,`)
+	inputFile = reactionsPossibleVals.ReplaceAllString(inputFile, `Enum${1}ReactionsThumbsUp,${2}Enum${1}ReactionsThumbsDown,`)
+
+	postContentThumbs := regexp.MustCompile(`PostContentSchemaContent1 PostContentSchemaContent = ("\+1")(\n\t+)PostContentSchemaContent1 PostContentSchemaContent = ("-1")`)
+	inputFile = postContentThumbs.ReplaceAllString(inputFile, `PostContentSchemaContentThumbsUp PostContentSchemaContent = ${1}${2}PostContentSchemaContentThumbsDown PostContentSchemaContent = ${3}`)
+
+	postContentPossibleVals := regexp.MustCompile(`PostContentSchemaContent1,(\n\t+)PostContentSchemaContent1,`)
+	inputFile = postContentPossibleVals.ReplaceAllString(inputFile, `PostContentSchemaContentThumbsUp,${1}PostContentSchemaContentThumbsDown,`)
+
+	reactionContentThumbs := regexp.MustCompile(`ReactionContent1 ReactionContent = ("\+1")(\n\t+)ReactionContent1 ReactionContent = ("-1")`)
+	inputFile = reactionContentThumbs.ReplaceAllString(inputFile, `ReactionContentThumbsUp ReactionContent = ${1}${2}ReactionContentThumbsDown ReactionContent = ${3}`)
+
+	reactionContentPossibleVals := regexp.MustCompile(`ReactionContent1,(\n\t+)ReactionContent1,`)
+	inputFile = reactionContentPossibleVals.ReplaceAllString(inputFile, `ReactionContentThumbsUp,${1}ReactionContentThumbsDown,`)
+
 	return inputFile
 }
 
