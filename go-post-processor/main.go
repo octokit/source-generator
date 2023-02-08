@@ -50,6 +50,7 @@ func run() error {
 		}
 
 		fileContents = fixPackageNaming(fileContents, packageName)
+		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(fmt.Sprintf("%v/%v/%v", outputDirName, packageName, file.Name()), []byte(fileContents), 0666)
@@ -99,16 +100,144 @@ func fixPackageNaming(inputFile string, packageName string) string {
 	return inputFile
 }
 
-func fixThumbsUpThumbsDownProperties(inputFile string) (string, error) {
+// TODO(kfcampbell): figure out if some of these can be done with directives instead
+func fixThumbsUpThumbsDownProperties(inputFile string) string {
+	/*
+		// REQUIRED
+		1 *int32 `json:"+1,omitempty"`
 
-	// conditions for needing to fix thumbs up/thumbs down issue:
-	// filename contains "Reaction"
+		// REQUIRED
+		1 *int32 `json:"-1,omitempty"`
+	*/
+	toReplace := `
+	// REQUIRED
+	1 *int32 ` + "`json:\"+1,omitempty\"`" + `
 
-	toReplace := ``
-	replaceWith := ``
+	// REQUIRED
+	1 *int32 ` + "`json:\"-1,omitempty\"`"
+
+	replaceWith := `
+	// REQUIRED
+	ThumbsUp *int32 ` + "`json:\"+1,omitempty\"`" + `
+
+	// REQUIRED
+	ThumbsDown *int32 ` + "`json:\"-1,omitempty\"`"
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
-	return inputFile, nil
+
+	/*
+		1 *int32 `json:"+1,omitempty"`
+		1 *int32 `json:"-1,omitempty"`
+	*/
+	toReplace = `
+	1 *int32 ` + "`json:\"+1,omitempty\"`" + `
+	1 *int32 ` + "`json:\"-1,omitempty\"`"
+
+	replaceWith = `
+	ThumbsUp *int32 ` + "`json:\"+1,omitempty\"`" + `
+	ThumbsDown *int32 ` + "`json:\"-1,omitempty\"`"
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	/*
+		populate(objectMap, "+1", r.1)
+		populate(objectMap, "-1", r.1)
+	*/
+	toReplace = `
+	populate(objectMap, "+1", r.1)
+	populate(objectMap, "-1", r.1)
+	`
+
+	replaceWith = `
+	populate(objectMap, "+1", r.ThumbsUp)
+	populate(objectMap, "-1", r.ThumbsDown)
+	`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	/*
+		case "+1":
+			err = unpopulate(val, "1", &r.1)
+			delete(rawMsg, key)
+		case "-1":
+			err = unpopulate(val, "1", &r.1)
+			delete(rawMsg, key)
+	*/
+
+	toReplace = `
+		case "+1":
+				err = unpopulate(val, "1", &r.1)
+				delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "1", &r.1)
+				delete(rawMsg, key)
+	`
+
+	replaceWith = `
+		case "+1":
+			err = unpopulate(val, "+1", &r.ThumbsUp)
+			delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "-1", &r.ThumbsDown)
+				delete(rawMsg, key)
+	`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	/*
+		populate(objectMap, "+1", w.1)
+		populate(objectMap, "-1", w.1)
+	*/
+	toReplace = `
+	populate(objectMap, "+1", w.1)
+	populate(objectMap, "-1", w.1)
+	`
+
+	replaceWith = `
+	populate(objectMap, "+1", w.ThumbsUp)
+	populate(objectMap, "-1", w.ThumbsDown)
+	`
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	/*
+		case "+1":
+				err = unpopulate(val, "1", &w.1)
+				delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "1", &w.1)
+				delete(rawMsg, key)
+	*/
+	toReplace = `
+		case "+1":
+				err = unpopulate(val, "1", &w.1)
+				delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "1", &w.1)
+				delete(rawMsg, key)
+	`
+
+	replaceWith = `
+		case "+1":
+				err = unpopulate(val, "1", &w.ThumbsUp)
+				delete(rawMsg, key)
+		case "-1":
+				err = unpopulate(val, "1", &w.ThumbsDown)
+				delete(rawMsg, key)
+	`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	return inputFile
 }
