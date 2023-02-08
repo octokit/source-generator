@@ -86,7 +86,7 @@ func run() error {
 		return fmt.Errorf("could not build Go SDK successfully: %v", err)
 	}
 
-	// create main.go file for testing
+	// TODO(kfcampbell): create main.go file for testing
 	return nil
 }
 
