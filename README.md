@@ -4,21 +4,12 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 
 ## Usage
 
-### Prerequisites
-1. Install openapi-generator-cli: `npm i -g @openapitools/openapi-generator-cli`
-1. Install the Java runtime (on Ubuntu derivatives, you may use `sudo apt install default-jre`)
-
-## Execution
-
-### For OpenAPI-Generator
-
-1. To generate the .NET package, run from the root of the repo: `openapi-generator-cli generate -i schemas/api.github.com/api.github.com.2022-11-28.json -t templates/dotnet -g csharp -o generated/dotnet -p packageName=Octokit`. Alternately, you may run the provided script `generate.sh`.
-1. To build the .NET package, change directories into generated/dotnet and run `chmod +x build.sh`, followed by `./build.sh`.
-
 ### For AutoREST
 
 1. `npm install -g autorest`
-1. `time autorest autorest-config.yaml --csharp --debug --verbose` from the repo root for Go, and `time autorest autorest-config.yaml --go --debug --verbose`
+1. `time autorest autorest-config.yaml --go --debug --verbose` from the repo root for Go code generation
+1. Run post-processing with `cd go-post-processor && go run main.go`
+1. Build resulting code with `cd output && go build ./...`
 
 Notes:
 

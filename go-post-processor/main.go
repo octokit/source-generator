@@ -63,7 +63,7 @@ func run() error {
 	}
 
 	// after files are written, initialize a module
-	cmd := exec.Command("go", "mod", "init", "github.com/nickfloyd/source-generator/go-post-processor/output")
+	cmd := exec.Command("go", "mod", "init", "github.com/octokit/source-generator/go-post-processor/output")
 	cmd.Dir = outputDirName
 
 	output, err := cmd.Output()

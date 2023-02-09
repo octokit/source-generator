@@ -2,5 +2,6 @@ generated/**
 openapitools.json
 nuget.exe
 go-post-processor/output
+go-post-processor/post-processor
 
 .DS_Store
