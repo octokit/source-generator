@@ -104,8 +104,8 @@ func fixPackageNaming(inputFile string, packageName string) string {
 }
 
 func fixClientWorkflowIDErrors(inputFile string) string {
-	removeStruct := regexp.MustCompile(`type Components.*ParametersWorkflowIDSchema struct {\n}\n\n\n`)
-	inputFile = removeStruct.ReplaceAllString(inputFile, `\n`) // just delete it
+	removeStruct := regexp.MustCompile(`type Components.*ParametersWorkflowIDSchema struct {\n}\n\n`)
+	inputFile = removeStruct.ReplaceAllString(inputFile, ``) // just delete it
 
 	// important! this regex must be run _after_ the above removeStruct regex,
 	// otherwise the removeStruct regex will not match anything
