@@ -25,7 +25,7 @@ jobs:
         run: time autorest autorest-config.yaml --go --debug --verbose
 
       - name: Build post-processing
-        run: go build -o post-processor go-post-processor/main.go
+        run: go build -o go-post-processor/post-processor go-post-processor/main.go
 
       - name: Run post-processing
         run: go-post-processor/post-processor $(pwd)/generated/go
