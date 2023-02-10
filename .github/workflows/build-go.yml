@@ -8,8 +8,7 @@ jobs:
   build:
     strategy:
       fail-fast: false
-    runs-on:
-      group: larger-runners-16core
+    runs-on: larger-runners-16core
 
     steps:
       - name: Checkout repository
