@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       fail-fast: false
-    runs-on: larger-runners-16core
+    runs-on: ubuntu-latest-16-cores
 
     steps:
       - name: Checkout repository
