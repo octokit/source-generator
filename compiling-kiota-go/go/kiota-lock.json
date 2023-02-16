@@ -1,0 +1,29 @@
+{
+  "descriptionHash": "880C24BB7663AAF9993318B54E389D2DB4E015EF827A00CACD3D3AFB89C1A197FCD11898BA3D6BBD816ECEE8D4349EF8F7DA1E1B152B14A5F8BD56B14AEE52D8",
+  "descriptionLocation": "/home/kfcampbell/github/dev/source-generator/schemas/updated/api.github.com.json",
+  "lockFileVersion": "1.0.0",
+  "kiotaVersion": "0.11.1-preview",
+  "clientClassName": "ApiClient",
+  "clientNamespaceName": "github.com/octokit/kiota/",
+  "language": "Go",
+  "usesBackingStore": false,
+  "includeAdditionalData": true,
+  "serializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory"
+  ],
+  "deserializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Text.TextParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Form.FormParseNodeFactory"
+  ],
+  "structuredMimeTypes": [
+    "application/json",
+    "text/plain",
+    "application/x-www-form-urlencoded"
+  ],
+  "includePatterns": [],
+  "excludePatterns": [],
+  "disabledValidationRules": []
+}

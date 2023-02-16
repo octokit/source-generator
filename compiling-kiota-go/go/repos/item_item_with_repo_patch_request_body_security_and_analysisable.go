@@ -1,0 +1,17 @@
+package repos
+
+import (
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)
+
+// ItemItemWithRepoPatchRequestBody_security_and_analysisable 
+type ItemItemWithRepoPatchRequestBody_security_and_analysisable interface {
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
+    GetAdvancedSecurity()(ItemItemWithRepoPatchRequestBody_security_and_analysis_advanced_securityable)
+    GetSecretScanning()(ItemItemWithRepoPatchRequestBody_security_and_analysis_secret_scanningable)
+    GetSecretScanningPushProtection()(ItemItemWithRepoPatchRequestBody_security_and_analysis_secret_scanning_push_protectionable)
+    SetAdvancedSecurity(value ItemItemWithRepoPatchRequestBody_security_and_analysis_advanced_securityable)()
+    SetSecretScanning(value ItemItemWithRepoPatchRequestBody_security_and_analysis_secret_scanningable)()
+    SetSecretScanningPushProtection(value ItemItemWithRepoPatchRequestBody_security_and_analysis_secret_scanning_push_protectionable)()
+}

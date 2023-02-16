@@ -1,0 +1,57 @@
+package models
+
+import (
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)
+
+// Importable 
+type Importable interface {
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
+    GetAuthorsCount()(*int32)
+    GetAuthorsUrl()(*string)
+    GetCommitCount()(*int32)
+    GetErrorMessage()(*string)
+    GetFailedStep()(*string)
+    GetHasLargeFiles()(*bool)
+    GetHtmlUrl()(*string)
+    GetImportPercent()(*int32)
+    GetLargeFilesCount()(*int32)
+    GetLargeFilesSize()(*int32)
+    GetMessage()(*string)
+    GetProjectChoices()([]Import_project_choicesable)
+    GetPushPercent()(*int32)
+    GetRepositoryUrl()(*string)
+    GetStatus()(*Import_status)
+    GetStatusText()(*string)
+    GetSvcRoot()(*string)
+    GetSvnRoot()(*string)
+    GetTfvcProject()(*string)
+    GetUrl()(*string)
+    GetUseLfs()(*bool)
+    GetVcs()(*string)
+    GetVcsUrl()(*string)
+    SetAuthorsCount(value *int32)()
+    SetAuthorsUrl(value *string)()
+    SetCommitCount(value *int32)()
+    SetErrorMessage(value *string)()
+    SetFailedStep(value *string)()
+    SetHasLargeFiles(value *bool)()
+    SetHtmlUrl(value *string)()
+    SetImportPercent(value *int32)()
+    SetLargeFilesCount(value *int32)()
+    SetLargeFilesSize(value *int32)()
+    SetMessage(value *string)()
+    SetProjectChoices(value []Import_project_choicesable)()
+    SetPushPercent(value *int32)()
+    SetRepositoryUrl(value *string)()
+    SetStatus(value *Import_status)()
+    SetStatusText(value *string)()
+    SetSvcRoot(value *string)()
+    SetSvnRoot(value *string)()
+    SetTfvcProject(value *string)()
+    SetUrl(value *string)()
+    SetUseLfs(value *bool)()
+    SetVcs(value *string)()
+    SetVcsUrl(value *string)()
+}
