@@ -36,6 +36,5 @@ jobs:
 
       - name: Build generated and processed SDK
         run: |
-          ls -R
-          cd output
+          cd generated/go
           go build ./...
