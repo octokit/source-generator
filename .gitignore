@@ -1,7 +1,15 @@
-generated/**
 openapitools.json
 nuget.exe
+
+# GO Related
+generated/go
 go-post-processor/output
 go-post-processor/post-processor
+
+#.NET Related
+generated/csharp/Kiota
+generated/csharp/kiota-lock.json
+generated/csharp/bin
+generated/csharp/obj
 
 .DS_Store
