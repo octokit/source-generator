@@ -83,13 +83,13 @@ func run() error {
 	}
 
 	// run build
-	cmd = exec.Command("go", "build", "./...")
-	cmd.Dir = dirPath
+	// cmd = exec.Command("go", "build", "./...")
+	// cmd.Dir = dirPath
 
-	output, err = cmd.Output()
-	if err != nil {
-		return fmt.Errorf("could not build Go SDK successfully: %v", err)
-	}
+	// output, err = cmd.Output()
+	// if err != nil {
+	// 	return fmt.Errorf("could not build Go SDK successfully: %v", err)
+	// }
 
 	// TODO(kfcampbell): create main.go file for testing
 	return nil

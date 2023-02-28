@@ -32,7 +32,7 @@ jobs:
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
 
       - name: Run post-processing
-        run: post-processors/csharp/post-processor $(pwd)/generated/csharp
+        run: post-processors/csharp/post-processor $(pwd)/generated/csharp/Kiota
 
       - name: Build generated and processed SDK
         run: |
