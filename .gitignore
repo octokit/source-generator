@@ -1,5 +1,6 @@
 openapitools.json
 nuget.exe
+output.txt
 
 # GO Related
 generated/go
