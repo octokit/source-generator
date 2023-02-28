@@ -26,7 +26,7 @@ var requestAdapter = new HttpClientRequestAdapter(authProvider);
 
 // Basic request
 
-var client = new ApiSdk.ApiClient(requestAdapter);
+var client = new Octokit.ApiClient(requestAdapter);
 var request = await client.Octocat.GetAsync();
 
 StreamReader reader = new StreamReader(request);

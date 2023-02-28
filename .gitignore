@@ -8,7 +8,7 @@ post-processors/go/output
 post-processors/go/post-processor
 
 #.NET Related
-generated/csharp/Kiota
+generated/csharp/Octokit
 generated/csharp/kiota-lock.json
 generated/csharp/bin
 generated/csharp/obj

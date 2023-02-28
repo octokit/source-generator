@@ -26,13 +26,13 @@ jobs:
         run: dotnet tool install --global --prerelease Microsoft.OpenApi.Kiota
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o generated/csharp -n kiota -d schemas/updated/api.github.com.json --co
+        run: time kiota generate -l csharp --ll trace -o generated/csharp/Octokit -n Octokit -d schemas/updated/api.github.com.json --co
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
 
       - name: Run post-processing
-        run: post-processors/csharp/post-processor $(pwd)/generated/csharp/Kiota
+        run: post-processors/csharp/post-processor $(pwd)/generated/csharp/Octokit
 
       - name: Build generated and processed SDK
         run: |
