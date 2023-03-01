@@ -16,5 +16,6 @@ post-processors/csharp/post-processor
 
 # Ruby related
 generated/ruby
+post-processors/ruby/post-processor
 
 .DS_Store
