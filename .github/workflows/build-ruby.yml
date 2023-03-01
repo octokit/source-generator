@@ -1,0 +1,45 @@
+name: "Build and validate .NET generated SDK"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v3.0.3
+        with:
+          dotnet-version: '7.x.x'
+
+      - uses: ruby/setup-ruby@92aece5 # v1.139.0
+        with:
+          ruby-version: '3.1.1'
+
+      - uses: actions/setup-go@v3.5.0
+        with:
+          go-version: '1.21'
+
+      - name: Install kiota
+        run: dotnet tool install --global --prerelease Microsoft.OpenApi.Kiota
+
+      - name: Run generation
+        run: time kiota generate -l ruby --ll trace -o generated/ruby -n kiota -d schemas/updated/api.github.com.json --co
+
+      - name: Build post-processing
+        run: go build -o post-processors/ruby/post-processor post-processors/ruby/main.go
+
+      - name: Run post-processing
+        run: post-processors/ruby/post-processor $(pwd)/generated/ruby
+
+      # TODO(kfcampbell): implement
+      - name: Run sample request using generated and processed SDK
+        run: |
+          cd generated/ruby
+          ls -R
