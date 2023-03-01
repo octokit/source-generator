@@ -18,7 +18,7 @@ jobs:
         with:
           dotnet-version: '7.x.x'
 
-      - uses: ruby/setup-ruby@92aece5 # v1.139.0
+      - uses: ruby/setup-ruby@92aece5fc9c784ab66851c1e702b1bd5885a51f2 # v1.139.0
         with:
           ruby-version: '3.1.1'
 
