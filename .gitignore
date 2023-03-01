@@ -2,7 +2,7 @@ openapitools.json
 nuget.exe
 output.txt
 
-# GO Related
+# Go Related
 generated/go
 post-processors/go/output
 post-processors/go/post-processor
@@ -13,5 +13,8 @@ generated/csharp/kiota-lock.json
 generated/csharp/bin
 generated/csharp/obj
 post-processors/csharp/post-processor
+
+# Ruby related
+generated/ruby
 
 .DS_Store
