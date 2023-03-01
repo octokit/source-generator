@@ -1,4 +1,4 @@
-name: "Build and validate .NET generated SDK"
+name: "Build and validate Ruby generated SDK"
 
 on:
   pull_request:
