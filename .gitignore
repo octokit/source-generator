@@ -1,7 +1,6 @@
 openapitools.json
 nuget.exe
 output.txt
-generated/*
 
 # Go Related
 generated/go
