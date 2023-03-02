@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 )
 
 func main() {
@@ -78,40 +77,19 @@ func fixEmptyCaseStatements(inputFile string) string {
 		end
 	*/
 
-	if strings.Contains(inputFile, `case mapping_value`) {
-		caseMappingValue := regexp.MustCompile(`^\s+case mapping_value\s+.*?\s+`)
-		inputFile = caseMappingValue.ReplaceAllString(inputFile, ``)
-	}
-
-	// toReplace := `case mapping_value
-	//                 end`
-
-	// // toReplace := `                        case mapping_value
-	// //                     end`
-
-	// replaceWith := ``
-
-	// if strings.Contains(inputFile, toReplace) {
-	// 	inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	// }
+	emptyCaseStatements := regexp.MustCompile(`\s+case mapping_value\n\s+end`)
+	inputFile = emptyCaseStatements.ReplaceAllString(inputFile, ``)
 	return inputFile
 }
 
 // TODO(kfcampbell): implement and validate
 func fixThumbsUpThumbsDownProperties(inputFile string) string {
 	/*
-		ONE_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-		ONE_REACTIONSPOSTREQUESTBODY_CONTENT
+		One: :One,
+		One: :One,
 	*/
-	toReplace := `ONE_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-    ONE_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	replaceWith := `THUMBSUP_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-    THUMBSDOWN_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
+	thumbsUpThumbsDown := regexp.MustCompile(`(\s+)One: :One,(\n\s+)One: :One,`)
+	inputFile = thumbsUpThumbsDown.ReplaceAllString(inputFile, `${1}ThumbsUp: :ThumbsUp,${2}ThumbsDown: :ThumbsDown,`)
 
 	return inputFile
 }
