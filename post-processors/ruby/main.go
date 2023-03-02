@@ -48,8 +48,8 @@ func run() error {
 			return err
 		}
 	}
-
-	// after files are written, initialize a module
+	// do imports here via cmdline
+	// initialize a module and do basic request
 
 	return nil
 }
