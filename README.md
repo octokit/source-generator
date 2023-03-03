@@ -39,3 +39,21 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 1. Run `go build -o post-processors/ruby/post-processor post-processors/ruby/main.go` to build the post-processor.
 1. Run `post-processors/ruby/post-processor $(pwd)/generated/ruby` to execute the post-processor.
 1. You may import and test the library by running `irb` and `load 'api_client.rb'`.
+
+Work-in-progress example Ruby code:
+
+```ruby
+require "microsoft_kiota_authentication_oauth"
+require "microsoft_graph_core"
+require "microsoft_graph"
+require_relative 'api_client.rb'
+
+context = MicrosoftKiotaAuthenticationOAuth::ClientCredentialContext.new("<the tenant id from your app registration>", "<the client id from your app registration>", "<the client secret from your app registration>")
+authentication_provider = MicrosoftGraphCore::Authentication::OAuthAuthenticationProvider.new(context, nil, ["Files.Read"])
+adapter = MicrosoftGraphBeta::GraphRequestAdapter.new(authentication_provider)
+
+client = Kiota::ApiClient.new(adapter)
+
+octocat = client.octocat.get()
+p octocat
+```
