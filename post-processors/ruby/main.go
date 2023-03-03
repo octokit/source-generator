@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
+	"regexp"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func run() error {
 		return fmt.Errorf("exactly one directory name must be provided to run post-processing on")
 	}
 	dirPath := os.Args[1]
-	log.Printf("running C# post-processing on directory %v", dirPath)
+	log.Printf("running Ruby post-processing on directory %v", dirPath)
 
 	files = make(map[string]fs.FileInfo)
 	err := filepath.Walk(dirPath, walkFiles)
@@ -35,17 +35,11 @@ func run() error {
 		}
 		fileContents := string(fileBytes)
 		if len(fileContents) < 1 {
-			return fmt.Errorf("input file %v must not be empty", file.Name())
+			// skip empty files that are generated in the Ruby SDK
+			continue
 		}
 
-		if file.Name() == "PagesPostRequestBody_source.cs" {
-			fileContents = fixAssignment(fileContents)
-		}
-
-		if file.Name() == "AutolinksPostRequestBody.cs" {
-			fileContents = fixStringToBool(fileContents)
-		}
-
+		fileContents = fixEmptyCaseStatements(fileContents)
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 
 		// TODO(kfcampbell): verify file permission is what we want
@@ -54,6 +48,8 @@ func run() error {
 			return err
 		}
 	}
+	// do imports here via cmdline
+	// initialize a module and do basic request
 
 	return nil
 }
@@ -74,36 +70,26 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	return nil
 }
 
-func fixAssignment(inputFile string) string {
-	// find: Path = PagesPostRequestBody_source_path.;
-	// replace: //Path = PagesPostRequestBody_source_path.; should be .Docs
-	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "//Path = PagesPostRequestBody_source_path.;")
+// TODO(kfcampbell): implement and validate
+func fixEmptyCaseStatements(inputFile string) string {
+	/*
+		case mapping_value
+		end
+	*/
+
+	emptyCaseStatements := regexp.MustCompile(`\s+case mapping_value\n\s+end`)
+	inputFile = emptyCaseStatements.ReplaceAllString(inputFile, ``)
 	return inputFile
 }
 
-func fixStringToBool(inputFile string) string {
-	// find: IsAlphanumeric = "true";
-	// replace: IsAlphanumeric = true;
-	inputFile = strings.ReplaceAll(inputFile, "IsAlphanumeric = \"true\";", "IsAlphanumeric = true;")
-	return inputFile
-}
-
+// TODO(kfcampbell): implement and validate
 func fixThumbsUpThumbsDownProperties(inputFile string) string {
 	/*
-		One,
-		One,
+		One: :One,
+		One: :One,
 	*/
-	toReplace := `{
-        One,
-        One,`
-
-	replaceWith := `{
-        One,
-        MinusOne,`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
+	thumbsUpThumbsDown := regexp.MustCompile(`(\s+)One: :One,(\n\s+)One: :One,`)
+	inputFile = thumbsUpThumbsDown.ReplaceAllString(inputFile, `${1}ThumbsUp: :ThumbsUp,${2}ThumbsDown: :ThumbsDown,`)
 
 	return inputFile
 }
