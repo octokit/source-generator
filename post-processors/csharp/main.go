@@ -20,7 +20,7 @@ func run() error {
 		return fmt.Errorf("exactly one directory name must be provided to run post-processing on")
 	}
 	dirPath := os.Args[1]
-	log.Printf("running post processing on directory %v", dirPath)
+	log.Printf("running post processing for C# SDK on directory %v", dirPath)
 
 	files = make(map[string]fs.FileInfo)
 	err := filepath.Walk(dirPath, walkFiles)
