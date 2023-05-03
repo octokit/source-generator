@@ -38,15 +38,12 @@ func run() error {
 			return fmt.Errorf("input file %v must not be empty", file.Name())
 		}
 
-		if file.Name() == "PagesPostRequestBody_source.cs" {
-			fileContents = fixAssignment(fileContents)
-		}
-
 		if file.Name() == "AutolinksPostRequestBody.cs" {
 			fileContents = fixStringToBool(fileContents)
 		}
 
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
+		fileContents = fixPagesPaths(fileContents)
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -74,13 +71,6 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	return nil
 }
 
-func fixAssignment(inputFile string) string {
-	// find: Path = PagesPostRequestBody_source_path.;
-	// replace: //Path = PagesPostRequestBody_source_path.; should be .Docs
-	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "//Path = PagesPostRequestBody_source_path.;")
-	return inputFile
-}
-
 func fixStringToBool(inputFile string) string {
 	// find: IsAlphanumeric = "true";
 	// replace: IsAlphanumeric = true;
@@ -105,5 +95,31 @@ func fixThumbsUpThumbsDownProperties(inputFile string) string {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
+	return inputFile
+}
+
+func fixPagesPaths(inputFile string) string {
+	// find: Path = PagesPostRequestBody_source_path.;
+	// replace: Path = PagesPostRequestBody_source_path.Root;
+	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "Path = PagesPostRequestBody_source_path.Root;")
+
+	// find:
+	/*
+		public enum PagesPostRequestBody_source_path {
+			[EnumMember(Value = "/docs")]
+			Docs,
+		}
+	*/
+	// replace:
+	/*
+		public enum PagesPostRequestBody_source_path {
+			[EnumMember(Value = "/")]
+			Root,
+			[EnumMember(Value = "/docs")]
+			Docs,
+		}
+	*/
+
+	inputFile = strings.ReplaceAll(inputFile, "[EnumMember(Value = \"/docs\")]\n\t\tDocs,", "[EnumMember(Value = \"/\")]\n\t\tRoot,\n\t\t[EnumMember(Value = \"/docs\")]\n\t\tDocs,")
 	return inputFile
 }
