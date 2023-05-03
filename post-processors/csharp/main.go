@@ -120,6 +120,14 @@ func fixPagesPaths(inputFile string) string {
 		}
 	*/
 
-	inputFile = strings.ReplaceAll(inputFile, "[EnumMember(Value = \"/docs\")]\n\t\tDocs,", "[EnumMember(Value = \"/\")]\n\t\tRoot,\n\t\t[EnumMember(Value = \"/docs\")]\n\t\tDocs,")
+	inputFile = strings.ReplaceAll(inputFile, `public enum PagesPostRequestBody_source_path {
+        [EnumMember(Value = "/docs")]
+        Docs,
+    }`, `public enum PagesPostRequestBody_source_path {
+		[EnumMember(Value = "/")]
+		Root,
+        [EnumMember(Value = "/docs")]
+        Docs,
+    }`)
 	return inputFile
 }
