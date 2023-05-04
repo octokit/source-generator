@@ -63,12 +63,12 @@ func run() error {
 	log.Printf("output of module initialization: %v", output)
 
 	deps := [6]string{
-		"github.com/microsoft/kiota-abstractions-go@v0.17.0",
-		"github.com/microsoft/kiota-http-go@v0.14.0",
-		"github.com/microsoft/kiota-serialization-form-go@v0.3.0",
-		"github.com/microsoft/kiota-serialization-json-go@v0.8.0",
+		"github.com/microsoft/kiota-abstractions-go@v0.20.0",
+		"github.com/microsoft/kiota-http-go@v0.17.0",
+		"github.com/microsoft/kiota-serialization-form-go@v0.9.1",
+		"github.com/microsoft/kiota-serialization-json-go@v0.9.3",
 		"github.com/microsoft/kiota-authentication-azure-go@v0.6.0",
-		"github.com/microsoft/kiota-serialization-text-go@v0.7.0",
+		"github.com/microsoft/kiota-serialization-text-go@v0.7.1",
 	}
 
 	// run go get on deps
@@ -414,6 +414,28 @@ type ItemStarredRepositoryable interface {
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
+	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	// remove unused imports that are present in specific files for some reason
+	if strings.Contains(filename, "issue_event_for_issue.go") || strings.Contains(filename, "timeline_issue_events.go") {
+		toReplace = `import (
+    i2ae4187f7daee263371cb1c977df639813ab50ffa529013b7437480d1ec0158f "github.com/microsoft/kiota-abstractions-go"
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)`
+
+		replaceWith = `import (
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)`
+		if strings.Contains(inputFile, toReplace) {
+			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+		}
 	}
 
 	return inputFile

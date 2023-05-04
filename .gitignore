@@ -12,6 +12,7 @@ generated/csharp/Octokit
 generated/csharp/kiota-lock.json
 generated/csharp/bin
 generated/csharp/obj
+generated/csharp/Kiota
 post-processors/csharp/post-processor
 
 .DS_Store
