@@ -7,7 +7,7 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 - Install
 	- [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 	- [Latest version of Go](https://go.dev/dl/)
-	- Kiota: `dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.1.3`
+	- Kiota: `dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.2.0`
 - Validation of SDKs in other platforms such as Ruby require that platform to be installed as well
 
 ## Usage
