@@ -45,6 +45,7 @@ func run() error {
 		fileContents = fixMissingErrorReferences(fileContents)
 		fileContents = dirtyHackToBreakFunctionalityForCompilation(fileContents, file.Name())
 		fileContents = removeUnusedImports(fileContents, file.Name())
+		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -439,6 +440,18 @@ func removeUnusedImports(inputFile string, filename string) string {
 		replaceWith := `import (
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
 )`
+		if strings.Contains(inputFile, toReplace) {
+			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+		}
+	}
+	return inputFile
+}
+
+func fixPackageNameInAPIClient(inputFile string, filename string) string {
+	if strings.Contains(filename, "api_client.go") {
+		toReplace := `package kiota`
+		replaceWith := `package main`
+
 		if strings.Contains(inputFile, toReplace) {
 			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 		}
