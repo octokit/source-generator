@@ -32,7 +32,7 @@ jobs:
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l go --ll trace -o generated/go -n kiota -d schemas/downloaded.json --co
+        run: time kiota generate -l go --ll trace -o generated/go -n kiota -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/go/post-processor post-processors/go/main.go
