@@ -64,12 +64,12 @@ func run() error {
 	log.Printf("output of module initialization: %v", output)
 
 	deps := [6]string{
-		"github.com/microsoft/kiota-abstractions-go@v0.20.0",
-		"github.com/microsoft/kiota-http-go@v0.17.0",
-		"github.com/microsoft/kiota-serialization-form-go@v0.9.1",
-		"github.com/microsoft/kiota-serialization-json-go@v0.9.3",
-		"github.com/microsoft/kiota-authentication-azure-go@v0.6.0",
-		"github.com/microsoft/kiota-serialization-text-go@v0.7.1",
+		"github.com/microsoft/kiota-abstractions-go@v1.0.0",
+		"github.com/microsoft/kiota-http-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-form-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-json-go@v1.0.0",
+		"github.com/microsoft/kiota-authentication-azure-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-text-go@v1.0.0",
 	}
 
 	// run go get on deps
