@@ -27,7 +27,7 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 ### C#
 
 1. Download the latest schema: `go run schemas/main.go --schema-next=false`
-1. Run generation: `kiota generate -l csharp --ll trace -o generated/csharp -n kiota -d schemas/downloaded.json > output.txt 2>&1`
+1. Run generation: `kiota generate -l csharp --ll trace -o generated/csharp -n Octokit -d schemas/downloaded.json > output.txt 2>&1`
 	1. Alternately, you may debug using the VSCode launch.json in the microsoft/kiota repo.
 1. Run `go build -o post-processors/csharp/post-processor post-processors/csharp/main.go` to build the post-processor.
 1. Run `post-processors/csharp/post-processor $(pwd)/generated/csharp` to execute the post-processor.
