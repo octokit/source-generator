@@ -3,7 +3,7 @@ using Azure.Core;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Authentication.Azure;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using Octokit;
+using Kiota;
 
 var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
 if (string.IsNullOrEmpty(token))
@@ -20,9 +20,9 @@ var requestAdapter = new HttpClientRequestAdapter(authProvider, null, null, new 
 var pathParameters = new Dictionary<string, object>() {
 		{"baseurl", "https://api.github.com/"},
 	};
-var octocatPathParams = new Octokit.Octocat.OctocatRequestBuilder(pathParameters, requestAdapter);
-Action<Octokit.Octocat.OctocatRequestBuilder.OctocatRequestBuilderGetRequestConfiguration> requestConfig =
-	delegate (Octokit.Octocat.OctocatRequestBuilder.OctocatRequestBuilderGetRequestConfiguration config)
+var octocatPathParams = new Kiota.Octocat.OctocatRequestBuilder(pathParameters, requestAdapter);
+Action<Kiota.Octocat.OctocatRequestBuilder.OctocatRequestBuilderGetRequestConfiguration> requestConfig =
+	delegate (Kiota.Octocat.OctocatRequestBuilder.OctocatRequestBuilderGetRequestConfiguration config)
 	{
 		config.QueryParameters.S = "Hey yo!";
 		config.Headers.Add("Accept", "application/vnd.github.v3+json");
