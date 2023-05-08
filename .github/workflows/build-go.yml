@@ -3,6 +3,9 @@ name: "Build and validate Go generated SDK"
 on:
   pull_request:
   workflow_dispatch:
+  schedule:
+    # Run generation nightly on latest OpenAPI spec
+    - cron: '0 0 * * *'
 
 jobs:
   build:
