@@ -13,7 +13,7 @@ var useSchemaNext bool
 // Normally I hate using init() but the docs [here](https://pkg.go.dev/flag)
 // recommend it so this usage is safe.
 func init() {
-	flag.BoolVar(&useSchemaNext, "schema-next", true, "Set to false using --schema-next=false to disable using the descriptions-next directory for schema downloads")
+	flag.BoolVar(&useSchemaNext, "schema-next", false, "Set to true using --schema-next=true to use the descriptions-next directory for schema downloads")
 }
 
 func main() {
