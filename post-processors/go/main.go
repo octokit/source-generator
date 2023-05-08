@@ -44,6 +44,7 @@ func run() error {
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixMissingErrorReferences(fileContents)
 		fileContents = dirtyHackToBreakFunctionalityForCompilation(fileContents, file.Name())
+		fileContents = removeUnusedImports(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -423,20 +424,24 @@ type ItemStarredRepositoryable interface {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
-	// remove unused imports that are present in specific files for some reason
-	if strings.Contains(filename, "issue_event_for_issue.go") || strings.Contains(filename, "timeline_issue_events.go") {
-		toReplace = `import (
+	return inputFile
+}
+
+func removeUnusedImports(inputFile string, filename string) string {
+	if strings.Contains(filename, "issue_event_for_issue.go") ||
+		strings.Contains(filename, "timeline_issue_events.go") ||
+		strings.Contains(filename, "repository_rule.go") {
+		toReplace := `import (
     i2ae4187f7daee263371cb1c977df639813ab50ffa529013b7437480d1ec0158f "github.com/microsoft/kiota-abstractions-go"
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
 )`
 
-		replaceWith = `import (
+		replaceWith := `import (
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
 )`
 		if strings.Contains(inputFile, toReplace) {
 			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 		}
 	}
-
 	return inputFile
 }
