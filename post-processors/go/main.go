@@ -45,6 +45,7 @@ func run() error {
 		fileContents = fixMissingErrorReferences(fileContents)
 		fileContents = dirtyHackToBreakFunctionalityForCompilation(fileContents, file.Name())
 		fileContents = removeUnusedImports(fileContents, file.Name())
+		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -64,12 +65,12 @@ func run() error {
 	log.Printf("output of module initialization: %v", output)
 
 	deps := [6]string{
-		"github.com/microsoft/kiota-abstractions-go@v0.20.0",
-		"github.com/microsoft/kiota-http-go@v0.17.0",
-		"github.com/microsoft/kiota-serialization-form-go@v0.9.1",
-		"github.com/microsoft/kiota-serialization-json-go@v0.9.3",
-		"github.com/microsoft/kiota-authentication-azure-go@v0.6.0",
-		"github.com/microsoft/kiota-serialization-text-go@v0.7.1",
+		"github.com/microsoft/kiota-abstractions-go@v1.0.0",
+		"github.com/microsoft/kiota-http-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-form-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-json-go@v1.0.0",
+		"github.com/microsoft/kiota-authentication-azure-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-text-go@v1.0.0",
 	}
 
 	// run go get on deps
@@ -439,6 +440,18 @@ func removeUnusedImports(inputFile string, filename string) string {
 		replaceWith := `import (
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
 )`
+		if strings.Contains(inputFile, toReplace) {
+			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+		}
+	}
+	return inputFile
+}
+
+func fixPackageNameInAPIClient(inputFile string, filename string) string {
+	if strings.Contains(filename, "api_client.go") {
+		toReplace := `package kiota`
+		replaceWith := `package main`
+
 		if strings.Contains(inputFile, toReplace) {
 			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 		}

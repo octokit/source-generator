@@ -4,7 +4,8 @@ output.txt
 schemas/downloaded.json
 
 # GO Related
-generated/go
+generated/go/*
+!generated/go/main.go
 post-processors/go/output
 post-processors/go/post-processor
 
