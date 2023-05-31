@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Execute generation
-kiota generate -l csharp --ll trace -o generated/csharp/Octokit -n Octokit -d schemas/updated/api.github.com.json --co
+kiota generate -l csharp --ll trace -o generated/csharp/Octokit -c OctokitClient -n Octokit.Client -d schemas/updated/api.github.com.json --co
 
 # Build and run post-processor
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go

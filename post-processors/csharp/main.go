@@ -101,33 +101,6 @@ func fixThumbsUpThumbsDownProperties(inputFile string) string {
 func fixPagesPaths(inputFile string) string {
 	// find: Path = PagesPostRequestBody_source_path.;
 	// replace: Path = PagesPostRequestBody_source_path.Root;
-	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "Path = PagesPostRequestBody_source_path.Root;")
-
-	// find:
-	/*
-		public enum PagesPostRequestBody_source_path {
-			[EnumMember(Value = "/docs")]
-			Docs,
-		}
-	*/
-	// replace:
-	/*
-		public enum PagesPostRequestBody_source_path {
-			[EnumMember(Value = "/")]
-			Root,
-			[EnumMember(Value = "/docs")]
-			Docs,
-		}
-	*/
-
-	inputFile = strings.ReplaceAll(inputFile, `public enum PagesPostRequestBody_source_path {
-        [EnumMember(Value = "/docs")]
-        Docs,
-    }`, `public enum PagesPostRequestBody_source_path {
-		[EnumMember(Value = "/")]
-		Root,
-        [EnumMember(Value = "/docs")]
-        Docs,
-    }`)
+	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "Path = PagesPostRequestBody_source_path.Docs;")
 	return inputFile
 }
