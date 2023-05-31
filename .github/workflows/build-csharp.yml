@@ -32,7 +32,7 @@ jobs:
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o generated/csharp/Octokit -n Octokit -d schemas/downloaded.json
+        run: time kiota generate -l csharp --ll trace -o generated/csharp/Octokit -c OctokitClient -n Octokit.Client -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
