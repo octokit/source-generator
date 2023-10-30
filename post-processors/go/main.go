@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/fs"
 	"log"
@@ -58,19 +59,29 @@ func run() error {
 	cmd := exec.Command("go", "mod", "init", "github.com/octokit/kiota")
 	cmd.Dir = dirPath
 
-	output, err := cmd.Output()
-	if err != nil {
-		return fmt.Errorf("could not initialize Go module: %v", err)
-	}
-	log.Printf("output of module initialization: %v", output)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 
-	deps := [6]string{
+	err = cmd.Run()
+
+	stdoutOutput := stdout.String()
+	stderrOutput := stderr.String()
+
+	if err != nil {
+		return fmt.Errorf("could not initialize Go module: %v\nfull error log:\n%s", err, stderrOutput)
+	}
+
+	log.Printf("output of module initialization: %v", stdoutOutput)
+
+	deps := [7]string{
 		"github.com/microsoft/kiota-abstractions-go@v1.3.0",
 		"github.com/microsoft/kiota-http-go@v1.1.0",
 		"github.com/microsoft/kiota-serialization-form-go@v1.0.0",
 		"github.com/microsoft/kiota-serialization-json-go@v1.0.4",
 		"github.com/microsoft/kiota-authentication-azure-go@v1.0.1",
 		"github.com/microsoft/kiota-serialization-text-go@v1.0.0",
+		"github.com/microsoft/kiota-serialization-multipart-go@v1.0.0",
 	}
 
 	// run go get on deps
@@ -78,7 +89,7 @@ func run() error {
 		cmd = exec.Command("go", "get", dep)
 		cmd.Dir = dirPath
 
-		output, err = cmd.Output()
+		_, err := cmd.Output()
 		if err != nil {
 			return fmt.Errorf("could not get dependencies: %v", err)
 		}
