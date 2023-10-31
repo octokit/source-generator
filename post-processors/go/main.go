@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
@@ -42,10 +41,7 @@ func run() error {
 		}
 
 		fileContents = fixImports(fileContents)
-		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
-		fileContents = fixMissingErrorReferences(fileContents)
 		fileContents = dirtyHackToBreakFunctionalityForCompilation(fileContents, file.Name())
-		fileContents = removeUnusedImports(fileContents, file.Name())
 		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = fixDuplicateStruct(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
@@ -127,20 +123,11 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	return nil
 }
 
+// these fixes are working around bugs or limitations in Kiota and/or our schema
 func fixImports(inputFile string) string {
 	// find: kiota/
 	// replace: github.com/octokit/kiota/
 	inputFile = strings.ReplaceAll(inputFile, "kiota/", "github.com/octokit/kiota/")
-	return inputFile
-}
-
-func fixDuplicateValueInEnums(inputFile string) string {
-	thumbsUp := regexp.MustCompile(`Enum\d+ (Enum(\d+)) = ("\+1")`)
-	thumbsDown := regexp.MustCompile(`Enum\d+ (Enum(\d+)) = ("\-1")`)
-
-	inputFile = thumbsUp.ReplaceAllString(inputFile, `Enum${2}ThumbsUp ${1} = ${3}`)
-	inputFile = thumbsDown.ReplaceAllString(inputFile, `Enum${2}ThumbsDown ${1} = ${3}`)
-
 	return inputFile
 }
 
@@ -258,212 +245,7 @@ type ImportEscapedable interface {
 	return inputFile
 }
 
-func fixMissingErrorReferences(inputFile string) string {
-	toReplace := `CreateStar404ErrorFromDiscriminatorValue`
-	replaceWith := `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateMoves403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithCard_403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateProjectCard503ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithProject_403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateProject403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithProject_403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithUsername422ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithProject_403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreatePullRequestMergeResult405ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreatePullRequestMergeResult409ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateWithRepo403ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `CreateMoves503ErrorFromDiscriminatorValue`
-	replaceWith = `i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
-func fixThumbsUpThumbsDownProperties(inputFile string) string {
-	/*
-		ONE_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-		ONE_REACTIONSPOSTREQUESTBODY_CONTENT
-	*/
-	toReplace := `ONE_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-    ONE_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	replaceWith := `THUMBSUP_REACTIONSPOSTREQUESTBODY_CONTENT ReactionsPostRequestBody_content = iota
-    THUMBSDOWN_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	/*
-				case "One":
-		            result = ONE_REACTIONSPOSTREQUESTBODY_CONTENT
-		        case "One":
-		            result = ONE_REACTIONSPOSTREQUESTBODY_CONTENT
-	*/
-	toReplace = `result := ONE_REACTIONSPOSTREQUESTBODY_CONTENT
-    switch v {
-        case "One":
-            result = ONE_REACTIONSPOSTREQUESTBODY_CONTENT
-        case "One":
-            result = ONE_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	replaceWith = `result := THUMBSUP_REACTIONSPOSTREQUESTBODY_CONTENT
-    switch v {
-        case "+1":
-            result = THUMBSUP_REACTIONSPOSTREQUESTBODY_CONTENT
-        case "-1":
-            result = THUMBSDOWN_REACTIONSPOSTREQUESTBODY_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	/*
-		ONE_REACTION_CONTENT Reaction_content = iota
-		ONE_REACTION_CONTENT
-	*/
-
-	toReplace = `ONE_REACTION_CONTENT Reaction_content = iota
-    ONE_REACTION_CONTENT`
-
-	replaceWith = `THUMBSUP_REACTION_CONTENT Reaction_content = iota
-    THUMBSDOWN_REACTION_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	/*
-		result := ONE_REACTION_CONTENT
-		switch v {
-			case "One":
-				result = ONE_REACTION_CONTENT
-			case "One":
-				result = ONE_REACTION_CONTENT
-	*/
-
-	toReplace = `result := ONE_REACTION_CONTENT
-    switch v {
-        case "One":
-            result = ONE_REACTION_CONTENT
-        case "One":
-            result = ONE_REACTION_CONTENT`
-
-	replaceWith = `result := THUMBSUP_REACTION_CONTENT
-    switch v {
-        case "+1":
-            result = THUMBSUP_REACTION_CONTENT
-        case "-1":
-            result = THUMBSDOWN_REACTION_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	/*
-		result := ONE_REACTION_CONTENT
-		switch v {
-			case "One":
-				result = ONE_REACTION_CONTENT
-			case "One":
-				result = ONE_REACTION_CONTENT
-	*/
-
-	toReplace = `result := ONE_REACTION_CONTENT
-    switch v {
-        case "One":
-            result = ONE_REACTION_CONTENT
-        case "One":
-            result = ONE_REACTION_CONTENT`
-
-	replaceWith = `result := THUMBSUP_REACTION_CONTENT
-    switch v {
-        case "+1":
-            result = THUMBSUP_REACTION_CONTENT
-        case "-1":
-            result = THUMBSDOWN_REACTION_CONTENT`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
+// still required at a function level; individual pieces perhaps can be removed
 func dirtyHackToBreakFunctionalityForCompilation(inputFile string, filename string) string {
 	toReplace := `for i, v := range res {
         val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
@@ -552,25 +334,6 @@ type ItemStarredRepositoryable interface {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
-	return inputFile
-}
-
-func removeUnusedImports(inputFile string, filename string) string {
-	if strings.Contains(filename, "issue_event_for_issue.go") ||
-		strings.Contains(filename, "timeline_issue_events.go") ||
-		strings.Contains(filename, "repository_rule.go") {
-		toReplace := `import (
-    i2ae4187f7daee263371cb1c977df639813ab50ffa529013b7437480d1ec0158f "github.com/microsoft/kiota-abstractions-go"
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
-)`
-
-		replaceWith := `import (
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
-)`
-		if strings.Contains(inputFile, toReplace) {
-			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-		}
-	}
 	return inputFile
 }
 
