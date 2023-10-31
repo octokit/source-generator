@@ -41,7 +41,7 @@ func run() error {
 		}
 
 		fileContents = fixImports(fileContents)
-		fileContents = dirtyHackToBreakFunctionalityForCompilation(fileContents, file.Name())
+		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
 		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = fixDuplicateStruct(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
@@ -245,84 +245,9 @@ type ImportEscapedable interface {
 	return inputFile
 }
 
-// still required at a function level; individual pieces perhaps can be removed
-func dirtyHackToBreakFunctionalityForCompilation(inputFile string, filename string) string {
-	toReplace := `for i, v := range res {
-        val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-    }`
-	replaceWith := `for i, _ := range res {
-		//val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-		t := serialization.DateOnly{}
-		val[i] = t
-	}`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue, errorMapping)`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	// change imports if we're in versions_request_builder.go
-	if strings.Contains(filename, "versions_request_builder.go") {
-		toReplace = `import (
-    "context"
-    i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830 "github.com/octokit/kiota/models"
-    i2ae4187f7daee263371cb1c977df639813ab50ffa529013b7437480d1ec0158f "github.com/microsoft/kiota-abstractions-go"
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
-)`
-
-		replaceWith = `import (
-	"context"
-
-	i2ae4187f7daee263371cb1c977df639813ab50ffa529013b7437480d1ec0158f "github.com/microsoft/kiota-abstractions-go"
-	"github.com/microsoft/kiota-abstractions-go/serialization"
-	i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
-	i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830 "github.com/octokit/kiota/models"
-)`
-
-		if strings.Contains(inputFile, toReplace) {
-			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-		}
-	}
-
-	toReplace = `// ItemStarredRepositoryable
-type ItemStarredRepositoryable interface {
-    IAdditionalDataHolder
-}`
-
-	replaceWith = `
-import (
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
-)
-
-// ItemStarredRepositoryable
-type ItemStarredRepositoryable interface {
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
-}
-`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `m.SetAdditionalData(make(map[string]any))
-    is_alphanumericValue := "true"
-    m.SetIsAlphanumeric(&is_alphanumericValue)`
-
-	replaceWith = `m.SetAdditionalData(make(map[string]any))
-	is_alphanumericValue := true
-	m.SetIsAlphanumeric(&is_alphanumericValue)`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `requestConfiguration *ApiClientGetRequestConfiguration`
-	replaceWith = `requestConfiguration *ApiClientApiClientApiClientGetRequestConfiguration`
-
+func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) string {
+	toReplace := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
+	replaceWith := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue, errorMapping)`
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
