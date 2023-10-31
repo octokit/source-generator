@@ -48,6 +48,7 @@ func run() error {
 		fileContents = removeUnusedImports(fileContents, file.Name())
 		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = fixDuplicateStruct(fileContents, file.Name())
+		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -138,6 +139,55 @@ func fixDuplicateValueInEnums(inputFile string) string {
 
 	inputFile = thumbsUp.ReplaceAllString(inputFile, `Enum${2}ThumbsUp ${1} = ${3}`)
 	inputFile = thumbsDown.ReplaceAllString(inputFile, `Enum${2}ThumbsDown ${1} = ${3}`)
+
+	return inputFile
+}
+
+func dirtyHackForVersionsRequestBuilder(inputFile string, fileName string) string {
+	if !strings.Contains(fileName, "versions_request_builder.go") {
+		return inputFile
+	}
+
+	toReplace := `
+	"github.com/microsoft/kiota-abstractions-go/serialization"`
+	replaceWith := ``
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `for i, v := range res {
+        if v != nil {
+            val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
+        }
+    }`
+	replaceWith = `// for i, v := range res {
+    //     if v != nil {
+    //         val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
+    //     }`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	return inputFile
+}
+
+func removeModelsKiotaDoesNotCleanUp(inputFile string) string {
+	toReplace := `// If specified, only code scanning alerts with this severity will be returned.
+    SeverityAsCodeScanningAlertSeverity *i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CodeScanningAlertSeverity ` + "`uriparametername:\"severity\"`"
+	replaceWith := ``
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `// If specified, only code scanning alerts with this state will be returned.
+    StateAsCodeScanningAlertStateQuery *i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CodeScanningAlertStateQuery ` + "`uriparametername:\"state\"`"
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
 
 	return inputFile
 }
