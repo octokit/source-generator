@@ -49,6 +49,7 @@ func run() error {
 		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = fixDuplicateStruct(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
+		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -508,8 +509,7 @@ func dirtyHackToBreakFunctionalityForCompilation(inputFile string, filename stri
 	toReplace = `// ItemStarredRepositoryable
 type ItemStarredRepositoryable interface {
     IAdditionalDataHolder
-}
-`
+}`
 
 	replaceWith = `
 import (
