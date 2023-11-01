@@ -83,7 +83,6 @@ func run() error {
 		"github.com/microsoft/kiota-serialization-multipart-go@v1.0.0",
 	}
 
-	// run go get on deps
 	for _, dep := range deps {
 		cmd = exec.Command("go", "get", dep)
 		cmd.Dir = dirPath
@@ -94,16 +93,6 @@ func run() error {
 		}
 	}
 
-	// // run build
-	// cmd = exec.Command("go", "build", "./...")
-	// cmd.Dir = dirPath
-
-	// output, err = cmd.Output()
-	// if err != nil {
-	// 	return fmt.Errorf("could not build Go SDK successfully: %v", err)
-	// }
-
-	// TODO(kfcampbell): create main.go file for testing
 	return nil
 }
 
