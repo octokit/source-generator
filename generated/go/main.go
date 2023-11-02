@@ -10,6 +10,7 @@ import (
 	auth "github.com/microsoft/kiota-abstractions-go/authentication"
 	http "github.com/microsoft/kiota-http-go"
 	"github.com/octokit/kiota/octocat"
+	"github.com/octokit/kiota/user"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 		log.Fatalf("GITHUB_TOKEN must be provided")
 	}
 
-	tokenProvider, err := auth.NewApiKeyAuthenticationProvider(token, "authorization", auth.HEADER_KEYLOCATION)
+	tokenProvider, err := auth.NewApiKeyAuthenticationProvider(fmt.Sprintf("Bearer %s", token), "Authorization", auth.HEADER_KEYLOCATION)
 	if err != nil {
 		log.Fatalf("failed to initialize token provider: %v", err)
 	}
@@ -29,30 +30,34 @@ func main() {
 	}
 
 	client := NewApiClient(adapter)
+	headers := abstractions.NewRequestHeaders()
+	_ = headers.TryAdd("Accept", "application/vnd.github.v3+json")
 
 	// unauthenticated request
 	s := "Salutations"
-	headers := abstractions.NewRequestHeaders()
-	_ = headers.TryAdd("Accept", "application/vnd.github.v3+json")
-	requestConfig := &octocat.OctocatRequestBuilderGetRequestConfiguration{
+	octocatRequestConfig := &octocat.OctocatRequestBuilderGetRequestConfiguration{
 		QueryParameters: &octocat.OctocatRequestBuilderGetQueryParameters{
 			S: &s,
 		},
 		Headers: headers,
 	}
-	cat, err := client.Octocat().Get(context.Background(), requestConfig)
+	cat, err := client.Octocat().Get(context.Background(), octocatRequestConfig)
 	if err != nil {
 		log.Fatalf("error getting octocat: %v", err)
 	}
 	fmt.Printf("%v\n", string(cat))
 
 	// authenticated request for private user emails
-	// userEmails, err := client.User().Emails().Get(context.Background(), nil)
-	// if err != nil {
-	// 	log.Fatalf("%v\n", err)
-	// }
+	// _ = headers.TryAdd("Authorization", fmt.Sprintf("Bearer %s", token))
+	emailsRequestConfig := &user.EmailsRequestBuilderGetRequestConfiguration{
+		Headers: headers,
+	}
+	userEmails, err := client.User().Emails().Get(context.Background(), emailsRequestConfig)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
 
-	// for _, v := range userEmails {
-	// 	fmt.Printf("%v\n", *v.GetEmail())
-	// }
+	for _, v := range userEmails {
+		fmt.Printf("%v\n", *v.GetEmail())
+	}
 }
