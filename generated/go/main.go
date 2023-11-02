@@ -28,19 +28,20 @@ func main() {
 
 	client := NewApiClient(adapter)
 
-	cat, err := client.Octocat().Get(context.Background(), nil)
-	if err != nil {
-		log.Fatalf("error getting octocat: %v", err)
-	}
-	fmt.Printf("%v\n", string(cat))
-
-	// uncomment to make authenticated request for private user emails
-	// x, err := client.User().Emails().Get(context.Background(), nil)
+	// unauthenticated request
+	// cat, err := client.Octocat().Get(context.Background(), nil)
 	// if err != nil {
-	// 	log.Fatalf("%v\n", err)
+	// 	log.Fatalf("error getting octocat: %v", err)
 	// }
+	// fmt.Printf("%v\n", string(cat))
 
-	// for _, v := range x {
-	// 	fmt.Printf("%v\n", *v.GetEmail())
-	// }
+	// authenticated request for private user emails
+	userEmails, err := client.User().Emails().Get(context.Background(), nil)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
+
+	for _, v := range userEmails {
+		fmt.Printf("%v\n", *v.GetEmail())
+	}
 }
