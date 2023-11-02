@@ -48,7 +48,6 @@ func main() {
 	fmt.Printf("%v\n", string(cat))
 
 	// authenticated request for private user emails
-	// _ = headers.TryAdd("Authorization", fmt.Sprintf("Bearer %s", token))
 	emailsRequestConfig := &user.EmailsRequestBuilderGetRequestConfiguration{
 		Headers: headers,
 	}
