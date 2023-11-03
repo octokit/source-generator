@@ -203,6 +203,9 @@ func fixKiotaNonDeterminism(inputFile string, fileName string) string {
 	if !strings.Contains(fileName, "item_starred_repository.go") {
 		return inputFile
 	}
+	// the extra space at the top of this string is because the Kiota
+	// generation leaves it in, but saving this file causes the Go formatter
+	// to remove the space and then the string won't match
 	toReplace := `// ItemStarredRepositoryable` + " " + `
 type ItemStarredRepositoryable interface {
     IAdditionalDataHolder
