@@ -20,7 +20,7 @@ This repository is a prototype of code generation from GitHub's OpenAPI specific
 1. Run `go build -o post-processors/go/post-processor post-processors/go/main.go` to build the post-processor.
 1. Run `post-processors/go/post-processor $(pwd)/generated/go` to execute the post-processor.
 1. Run `go build ./...` from the directory in which you've output the generated code to check compilation.
-1. Run `go run main.go` from the directory in which you've output the generated code in order to run the sample application.
+1. Run `go run *.go` from the directory in which you've output the generated code in order to run the sample application.
 1. For more info, [see Kiota documentation](https://microsoft.github.io/kiota/get-started/go.html).
 <!-- TODO(kfcampbell): create main.go file and run it -->
 

@@ -115,7 +115,7 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 func fixImports(inputFile string) string {
 	// find: kiota/
 	// replace: github.com/octokit/kiota/
-	inputFile = strings.ReplaceAll(inputFile, "kiota/", "github.com/octokit/kiota/")
+	inputFile = strings.ReplaceAll(inputFile, `"kiota/`, `"github.com/octokit/kiota/`)
 	return inputFile
 }
 
