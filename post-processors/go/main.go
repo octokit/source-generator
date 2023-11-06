@@ -45,6 +45,7 @@ func run() error {
 		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
+		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
 		err = os.WriteFile(path, []byte(fileContents), 0666)
@@ -186,13 +187,36 @@ func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) 
 }
 
 func fixPackageNameInAPIClient(inputFile string, filename string) string {
-	if strings.Contains(filename, "api_client.go") {
-		toReplace := `package kiota`
-		replaceWith := `package main`
+	if !strings.Contains(filename, "api_client.go") {
+		return inputFile
+	}
+	toReplace := `package kiota`
+	replaceWith := `package main`
 
-		if strings.Contains(inputFile, toReplace) {
-			inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-		}
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+	return inputFile
+}
+
+func fixKiotaNonDeterminism(inputFile string, fileName string) string {
+	if !strings.Contains(fileName, "item_starred_repository.go") {
+		return inputFile
+	}
+	// the extra space at the top of this string is because the Kiota
+	// generation leaves it in, but saving this file causes the Go formatter
+	// to remove the space and then the string won't match
+	toReplace := `// ItemStarredRepositoryable` + " " + `
+type ItemStarredRepositoryable interface {
+    IAdditionalDataHolder
+}`
+	replaceWith := `// ItemStarredRepositoryable
+type ItemStarredRepositoryable interface {
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
+}`
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 	return inputFile
 }
