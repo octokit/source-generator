@@ -82,7 +82,6 @@ func run() error {
 	if err != nil {
 		fmt.Printf("could not run kiota info: %v\nfull error log:\n%s", err, stderr.String())
 	}
-	fmt.Printf("kiota info output:\n%s\n", string(output))
 
 	// parse the json returned by kiota info, extract the "dependencies" field,
 	// and construct a "go get" command for each with the "name" and "version" subfields used.
