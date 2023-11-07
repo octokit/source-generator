@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"log"
@@ -64,26 +65,46 @@ func run() error {
 
 	err = cmd.Run()
 
-	stdoutOutput := stdout.String()
+	_ = stdout.String()
 	stderrOutput := stderr.String()
 
 	if err != nil {
 		return fmt.Errorf("could not initialize Go module: %v\nfull error log:\n%s", err, stderrOutput)
 	}
 
-	log.Printf("output of module initialization: %v", stdoutOutput)
+	cmd = exec.Command("kiota", "info", "-l", "Go", "--json")
+	cmd.Dir = dirPath
 
-	deps := [7]string{
-		"github.com/microsoft/kiota-abstractions-go@v1.3.0",
-		"github.com/microsoft/kiota-http-go@v1.1.0",
-		"github.com/microsoft/kiota-serialization-form-go@v1.0.0",
-		"github.com/microsoft/kiota-serialization-json-go@v1.0.4",
-		"github.com/microsoft/kiota-authentication-azure-go@v1.0.1",
-		"github.com/microsoft/kiota-serialization-text-go@v1.0.0",
-		"github.com/microsoft/kiota-serialization-multipart-go@v1.0.0",
+	stdout.Reset()
+	stderr.Reset()
+
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Printf("could not run kiota info: %v\nfull error log:\n%s", err, stderr.String())
+	}
+	fmt.Printf("kiota info output:\n%s\n", string(output))
+
+	// parse the json returned by kiota info, extract the "dependencies" field,
+	// and construct a "go get" command for each with the "name" and "version" subfields used.
+	// this code could result in exceptions if the format of the command isn't changed.
+	// if/when we know for sure that it's stabilized, this can be refactored to use structs
+	// and not all of these interface{}s and sleazy casting
+	var infoResult map[string]interface{}
+	if err := json.Unmarshal(output, &infoResult); err != nil {
+		return fmt.Errorf("could not parse kiota info output: %v", err)
+	}
+	deps := infoResult["dependencies"].([]interface{})
+	depsToInstall := make([]string, len(deps))
+	for i, d := range deps {
+		dep := d.(map[string]interface{})
+		name := dep["name"].(string)
+		version := dep["version"].(string)
+
+		fullDep := fmt.Sprintf("%s@%s", name, version)
+		depsToInstall[i] = fullDep
 	}
 
-	for _, dep := range deps {
+	for _, dep := range depsToInstall {
 		cmd = exec.Command("go", "get", dep)
 		cmd.Dir = dirPath
 
@@ -91,6 +112,7 @@ func run() error {
 		if err != nil {
 			return fmt.Errorf("could not get dependencies: %v", err)
 		}
+		fmt.Printf("installed dependency %s\n", dep)
 	}
 
 	return nil
