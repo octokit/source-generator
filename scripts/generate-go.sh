@@ -7,7 +7,7 @@
 # rm -rf generated/go/
 # git restore generated/
 
-source ./scripts/install-tools.sh
+./scripts/install-tools.sh
 
 set -ex
 

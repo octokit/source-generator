@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source ./scripts/install-tools.sh
+./scripts/install-tools.sh
 
 go run schemas/main.go --schema-next=false
 
