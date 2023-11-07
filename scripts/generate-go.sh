@@ -7,6 +7,8 @@
 # rm -rf generated/go/
 # git restore generated/
 
+source ./scripts/install-tools.sh
+
 set -ex
 
 go run schemas/main.go --schema-next=false
