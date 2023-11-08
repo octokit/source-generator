@@ -1,11 +1,31 @@
-﻿using Octokit.Client;
-using Microsoft.Kiota.Abstractions.Authentication;
+﻿using GitHubAuthentication;
+using Octokit.Client;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 
-// API requires no authentication, so use the anonymous
-var authProvider = new AnonymousAuthenticationProvider();
-var adapter = new HttpClientRequestAdapter(authProvider);
-var client = new OctokitClient(adapter);
+var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+var githubRequestAdapter = new HttpClientRequestAdapter(new GitHubBasicAuthenticationProvider("Octokit.Gen",token));
 
-var user = await client.Users["nickfloyd"].GetAsync();
-user?.AdditionalData.ToList().ForEach(x => Console.WriteLine(x.Key + ": " + x.Value));
+var gitHubClient = new OctokitClient(githubRequestAdapter);
+var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
+
+if (pullRequests == null)
+{
+    Console.WriteLine("No pull requests found.");
+    return;
+}
+
+foreach(var pullRequest in pullRequests)
+{
+  Console.WriteLine($"#{pullRequest.Number} - {pullRequest.Title}");
+
+  var pullRequestComnments = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls[pullRequest.Number.Value].Comments.GetAsync();
+  if (pullRequestComnments == null)
+  {
+    Console.WriteLine($"#{pullRequest.Number} - {pullRequest.Title} - No reviews found.");
+    continue;
+  } else {
+    foreach(var comments in pullRequestComnments) {
+      Console.WriteLine($"#{comments.Body}\n");
+    }
+  }
+}
