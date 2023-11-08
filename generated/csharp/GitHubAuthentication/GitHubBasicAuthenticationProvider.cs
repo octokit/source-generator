@@ -8,7 +8,7 @@ public class GitHubBasicAuthenticationProvider : IAuthenticationProvider
   private const string AuthorizationHeaderKey = "Authorization";
 
   public IAuthenticationProvider BasicAuthProvider {get; private set;}
-	public string ClientId { get; set; }
+  public string ClientId { get; set; }
   public string Token { get; set; }
 
   public GitHubBasicAuthenticationProvider(string clientId, string token)
@@ -22,7 +22,7 @@ public class GitHubBasicAuthenticationProvider : IAuthenticationProvider
     Token = token;
 
     BasicAuthProvider = this;
-	}
+  }
 
   public async Task AuthenticateRequestAsync(RequestInformation request, Dictionary<string, object>? additionalAuthenticationContext = null, CancellationToken cancellationToken = default)
   {
