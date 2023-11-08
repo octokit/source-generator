@@ -1,9 +1,9 @@
-﻿using GitHubAuthentication;
-using Octokit.Client;
+﻿using Octokit.Client;
+using GitHubAuthentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 
-var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
-var githubRequestAdapter = new HttpClientRequestAdapter(new GitHubBasicAuthenticationProvider("Octokit.Gen",token));
+var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
+var githubRequestAdapter = new HttpClientRequestAdapter(new GitHubTokenAuthenticationProvider("Octokit.Gen",token));
 
 var gitHubClient = new OctokitClient(githubRequestAdapter);
 var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
