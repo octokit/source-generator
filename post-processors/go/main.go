@@ -43,7 +43,6 @@ func run() error {
 
 		fileContents = fixImports(fileContents)
 		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
-		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
@@ -56,7 +55,7 @@ func run() error {
 	}
 
 	// after files are written, initialize a module
-	cmd := exec.Command("go", "mod", "init", "github.com/octokit/kiota")
+	cmd := exec.Command("go", "mod", "init", "github.com/octokit/go-sdk")
 	cmd.Dir = dirPath
 
 	var stdout, stderr bytes.Buffer
@@ -125,7 +124,12 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 		return fmt.Errorf("error walking files: %v", err)
 	}
 
-	// skip directories
+	// skip the .git directory
+	if strings.Contains(path, ".git") {
+		return nil
+	}
+
+	// skip other non-dot directories
 	if info.IsDir() {
 		return nil
 	}
@@ -135,9 +139,9 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 
 // these fixes are working around bugs or limitations in Kiota and/or our schema
 func fixImports(inputFile string) string {
-	// find: kiota/
-	// replace: github.com/octokit/kiota/
-	inputFile = strings.ReplaceAll(inputFile, `"kiota/`, `"github.com/octokit/kiota/`)
+	// find: go-sdk/
+	// replace: github.com/octokit/go-sdk/
+	inputFile = strings.ReplaceAll(inputFile, `"go-sdk/`, `"github.com/octokit/go-sdk/`)
 	return inputFile
 }
 
@@ -198,25 +202,12 @@ func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) 
 	}
 
 	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
+	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i33bcfa37677dfd8b71eaf22ad3bfd140ba1702e7a8418558499c22418bf2fef2.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
-	return inputFile
-}
-
-func fixPackageNameInAPIClient(inputFile string, filename string) string {
-	if !strings.Contains(filename, "api_client.go") {
-		return inputFile
-	}
-	toReplace := `package kiota`
-	replaceWith := `package main`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
 	return inputFile
 }
 
