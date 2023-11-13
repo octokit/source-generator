@@ -42,6 +42,7 @@ func run() error {
 		}
 
 		fileContents = fixImports(fileContents)
+		fileContents = fixAPIClientPackageImportName(fileContents, file.Name())
 		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
@@ -54,7 +55,6 @@ func run() error {
 		}
 	}
 
-	// after files are written, initialize a module
 	cmd := exec.Command("go", "mod", "init", "github.com/octokit/go-sdk")
 	cmd.Dir = dirPath
 
@@ -113,6 +113,17 @@ func run() error {
 		fmt.Printf("installed dependency %s\n", dep)
 	}
 
+	cmd = exec.Command("go", "mod", "tidy")
+	cmd.Dir = dirPath
+
+	stdout.Reset()
+	stderr.Reset()
+
+	output, err = cmd.Output()
+	if err != nil {
+		fmt.Printf("could not run go mod tidy: %v\nfull error log:\n%s", err, stderr.String())
+	}
+
 	return nil
 }
 
@@ -142,6 +153,20 @@ func fixImports(inputFile string) string {
 	// find: go-sdk/
 	// replace: github.com/octokit/go-sdk/
 	inputFile = strings.ReplaceAll(inputFile, `"go-sdk/`, `"github.com/octokit/go-sdk/`)
+	return inputFile
+}
+
+func fixAPIClientPackageImportName(inputFile string, fileName string) string {
+	if !strings.Contains(fileName, "api_client.go") {
+		return inputFile
+	}
+
+	toReplace := `package gosdk`
+	replaceWith := `package octokit`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
 	return inputFile
 }
 
