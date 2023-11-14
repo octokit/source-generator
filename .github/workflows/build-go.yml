@@ -32,7 +32,7 @@ jobs:
         run: cd ../ && pwd && git clone https://github.com/octokit/go-sdk.git && ls
 
       - name: Download latest schema
-        run: ls && pwd && cd source-generator && pwd && ls && go run schemas/main.go --schema-next=false
+        run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
         run: kiota generate -l go --ll trace -o $(pwd)/../go-sdk/github/octokit -n go-sdk -d schemas/downloaded.json
