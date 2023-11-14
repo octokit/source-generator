@@ -29,7 +29,9 @@ jobs:
         run: dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.8.1
 
       - name: Clone the existing go-sdk
-        run: cd ../ && pwd && git clone https://github.com/octokit/go-sdk.git && ls
+        run: |
+          cd ../
+          git clone https://github.com/octokit/go-sdk.git
 
       - name: Download latest schema
         run: go run schemas/main.go --schema-next=false
@@ -41,9 +43,11 @@ jobs:
         run: go build -o post-processors/go/post-processor post-processors/go/main.go
 
       - name: Run post-processing
-        run: cd ../go-sdk && ../source-generator/post-processors/go/post-processor $(pwd)/github/octokit
+        run: |
+          cd ../go-sdk
+          ../source-generator/post-processors/go/post-processor $(pwd)/github/octokit
 
       - name: Build generated and processed SDK
         run: |
-          ls -R
+          cd ../go-sdk
           go build ./...
