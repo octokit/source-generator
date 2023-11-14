@@ -54,6 +54,16 @@ func run() error {
 		}
 	}
 
+	err = os.Remove(filepath.Join(dirPath, "go.mod"))
+	if err != nil {
+		return fmt.Errorf("could not remove go.mod file: %v", err)
+	}
+
+	err = os.Remove(filepath.Join(dirPath, "go.sum"))
+	if err != nil {
+		return fmt.Errorf("could not remove go.sum file: %v", err)
+	}
+
 	cmd := exec.Command("go", "mod", "init", "github.com/octokit/go-sdk")
 	cmd.Dir = dirPath
 
