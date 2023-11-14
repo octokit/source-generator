@@ -2,6 +2,7 @@
 
 # convenience script for local development only
 # .github/workflows/build-go.yml is the source of truth for the generated Go workflow
+# requires cloning github.com/octokit/go-sdk in a sibling directory
 
 ./scripts/install-tools.sh
 
