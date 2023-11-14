@@ -151,7 +151,7 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 func fixImports(inputFile string) string {
 	// find: go-sdk/
 	// replace: github.com/octokit/go-sdk/
-	inputFile = strings.ReplaceAll(inputFile, `"go-sdk/`, `"github.com/octokit/go-sdk/`)
+	inputFile = strings.ReplaceAll(inputFile, `"octokit/`, `"github.com/octokit/go-sdk/github/octokit/`)
 	return inputFile
 }
 
@@ -212,7 +212,7 @@ func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) 
 	}
 
 	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i33bcfa37677dfd8b71eaf22ad3bfd140ba1702e7a8418558499c22418bf2fef2.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
+	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i8bb20811a612dd15efa26f086111481a68f72cd9ac5da7a939a417131078d77e.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)

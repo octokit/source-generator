@@ -45,7 +45,7 @@ jobs:
       - name: Run post-processing
         run: |
           cd ../go-sdk
-          ../source-generator/post-processors/go/post-processor $(pwd)/github/octokit
+          ../source-generator/post-processors/go/post-processor $(pwd)
 
       - name: Build generated and processed SDK
         run: |
