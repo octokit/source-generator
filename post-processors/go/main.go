@@ -43,7 +43,6 @@ func run() error {
 
 		fileContents = fixImports(fileContents)
 		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
-		fileContents = fixPackageNameInAPIClient(fileContents, file.Name())
 		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
@@ -55,8 +54,17 @@ func run() error {
 		}
 	}
 
-	// after files are written, initialize a module
-	cmd := exec.Command("go", "mod", "init", "github.com/octokit/kiota")
+	err = os.Remove(filepath.Join(dirPath, "go.mod"))
+	if err != nil {
+		return fmt.Errorf("could not remove go.mod file: %v", err)
+	}
+
+	err = os.Remove(filepath.Join(dirPath, "go.sum"))
+	if err != nil {
+		return fmt.Errorf("could not remove go.sum file: %v", err)
+	}
+
+	cmd := exec.Command("go", "mod", "init", "github.com/octokit/go-sdk")
 	cmd.Dir = dirPath
 
 	var stdout, stderr bytes.Buffer
@@ -114,6 +122,17 @@ func run() error {
 		fmt.Printf("installed dependency %s\n", dep)
 	}
 
+	cmd = exec.Command("go", "mod", "tidy")
+	cmd.Dir = dirPath
+
+	stdout.Reset()
+	stderr.Reset()
+
+	output, err = cmd.Output()
+	if err != nil {
+		fmt.Printf("could not run go mod tidy: %v\nfull error log:\n%s", err, stderr.String())
+	}
+
 	return nil
 }
 
@@ -125,7 +144,12 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 		return fmt.Errorf("error walking files: %v", err)
 	}
 
-	// skip directories
+	// skip the .git directory
+	if strings.Contains(path, ".git") {
+		return nil
+	}
+
+	// skip other non-dot directories
 	if info.IsDir() {
 		return nil
 	}
@@ -135,9 +159,9 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 
 // these fixes are working around bugs or limitations in Kiota and/or our schema
 func fixImports(inputFile string) string {
-	// find: kiota/
-	// replace: github.com/octokit/kiota/
-	inputFile = strings.ReplaceAll(inputFile, `"kiota/`, `"github.com/octokit/kiota/`)
+	// find: go-sdk/
+	// replace: github.com/octokit/go-sdk/
+	inputFile = strings.ReplaceAll(inputFile, `"octokit/`, `"github.com/octokit/go-sdk/github/octokit/`)
 	return inputFile
 }
 
@@ -198,25 +222,12 @@ func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) 
 	}
 
 	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
+	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i8bb20811a612dd15efa26f086111481a68f72cd9ac5da7a939a417131078d77e.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}
 
-	return inputFile
-}
-
-func fixPackageNameInAPIClient(inputFile string, filename string) string {
-	if !strings.Contains(filename, "api_client.go") {
-		return inputFile
-	}
-	toReplace := `package kiota`
-	replaceWith := `package main`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
 	return inputFile
 }
 
