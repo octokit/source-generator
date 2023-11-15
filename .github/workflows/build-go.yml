@@ -51,3 +51,14 @@ jobs:
         run: |
           cd ../go-sdk
           go build ./...
+
+      - uses: gr2m/create-or-update-pull-request-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+          # hack to use this Action to update a repo that's not its running location
+          GITHUB_REPOSITORY: octokit/go-sdk
+        with:
+          title: "Changes in generated code"
+          body: "The latest OpenAPI spec resulted in changes to the generated code."
+          branch: "generated-code-update"
+          author: "Octokit Bot <octokitbot@martynus.net>"
