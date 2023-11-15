@@ -62,3 +62,4 @@ jobs:
           body: "The latest OpenAPI spec resulted in changes to the generated code."
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
+          path: "../go-sdk"
