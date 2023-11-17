@@ -61,5 +61,5 @@ jobs:
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
-          repository: octokit/go-sdk
-          path: "../go-sdk"
+          repository: "octokit/go-sdk"
+          path-to-cd-to: "../go-sdk"
