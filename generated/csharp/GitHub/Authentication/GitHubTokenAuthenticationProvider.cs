@@ -1,7 +1,7 @@
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace GitHubAuthentication;
+namespace GitHub.Authentication;
 
 // TODO: Consider implementing `Bearer` authentication scheme as a separate class
 // TODO: Consider implementing `Basic` authentication scheme as a separate class
