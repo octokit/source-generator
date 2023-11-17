@@ -23,24 +23,31 @@ jobs:
 
       - uses: actions/setup-go@v3.5.0
         with:
-          go-version: '1.20.4'
+          go-version: '1.21.4'
 
       - name: Install kiota
         run: dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.8.1
+
+      - name: Clone the existing go-sdk
+        run: |
+          cd ../
+          git clone https://github.com/octokit/go-sdk.git
 
       - name: Download latest schema
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l go --ll trace -o generated/go -n kiota -d schemas/downloaded.json
+        run: kiota generate -l go --ll trace -o $(pwd)/../go-sdk/github/octokit -n octokit -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/go/post-processor post-processors/go/main.go
 
       - name: Run post-processing
-        run: post-processors/go/post-processor $(pwd)/generated/go
+        run: |
+          cd ../go-sdk
+          ../source-generator/post-processors/go/post-processor $(pwd)
 
       - name: Build generated and processed SDK
         run: |
-          cd generated/go
+          cd ../go-sdk
           go build ./...
