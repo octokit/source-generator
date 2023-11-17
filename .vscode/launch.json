@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C#: GitHub.Octokit.Client Debug",
+      "name": "C#: GitHub.Octokit Debug",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/generated/csharp/GitHub.Octokit.Client.csproj"
+      "projectPath": "${workspaceFolder}/generated/csharp/GitHub/GitHub.Octokit.csproj"
     },
     {
       "name": ".NET Core Launch (console)",
