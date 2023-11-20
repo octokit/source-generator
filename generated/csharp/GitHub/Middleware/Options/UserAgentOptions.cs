@@ -4,7 +4,7 @@ namespace GitHub.Octokit.Client.Middleware.Options;
 
 public class UserAgentOptions : IRequestOption
 {
-    public string ProductName { get; set; } = "octokit-net";
+    public string ProductName { get; set; } = "dotnet-sdk";
     public string ProductVersion { get; set; } = GetProductVersion();
 
   private static string GetProductVersion() =>
