@@ -2,7 +2,7 @@ using Microsoft.Kiota.Abstractions;
 
 namespace GitHub.Octokit.Client.Middleware.Options;
 
-public class VersionOptions : IRequestOption
+public class APIVersionOptions : IRequestOption
 {
 
     public string APIVersion { get; set; } = GetAPIVersion();

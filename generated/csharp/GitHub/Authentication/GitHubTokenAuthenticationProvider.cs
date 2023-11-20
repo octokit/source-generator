@@ -46,10 +46,6 @@ public class GitHubTokenAuthenticationProvider : IAuthenticationProvider
   {
 
     if(request == null) throw new ArgumentNullException(nameof(request));
-    
-    // This needs to be abstracted out into a configuration option but still set on each request
-    request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
-    request.Headers.Add("User-Agent", ClientId);
 
     if (Token == string.Empty)
     {
