@@ -42,6 +42,10 @@ func run() error {
 			fileContents = fixStringToBool(fileContents)
 		}
 
+    if file.Name() == "WebhookConfigInsecureSsl.cs" {
+			fileContents = fixUsing(fileContents)
+		}
+
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixPagesPaths(fileContents)
 
@@ -75,6 +79,13 @@ func fixStringToBool(inputFile string) string {
 	// find: IsAlphanumeric = "true";
 	// replace: IsAlphanumeric = true;
 	inputFile = strings.ReplaceAll(inputFile, "IsAlphanumeric = \"true\";", "IsAlphanumeric = true;")
+	return inputFile
+}
+
+func fixUsing(inputFile string) string {
+	// find: using Microsoft.Kiota.Abstractions;
+	// replace: using Microsoft.Kiota.Abstractions.Serialization;
+	inputFile = strings.ReplaceAll(inputFile, "using Microsoft.Kiota.Abstractions;", "using Microsoft.Kiota.Abstractions.Serialization;")
 	return inputFile
 }
 

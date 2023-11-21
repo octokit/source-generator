@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "generated", "generated", "{DA8C3044-5DD2-45EE-A1C9-9291E1FF725A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp", "generated\csharp\csharp.csproj", "{9B4D5FE1-40FA-4E03-B09B-D2DFE65AEA78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHub.Octokit.Client", "generated\csharp\GitHub\GitHub.Octokit.csproj", "{9B4D5FE1-40FA-4E03-B09B-D2DFE65AEA78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
