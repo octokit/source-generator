@@ -9,7 +9,6 @@ namespace GitHub.Octokit.Client.Middleware;
 class APIVersionHandler : DelegatingHandler
 {
   private const string ApiVersionHeaderKey = "X-GitHub-Api-Version";
-  private const string defaultAPIVersion = "2022-11-28";
 
   private readonly APIVersionOptions _apiVersionOptions;
 
@@ -26,9 +25,9 @@ class APIVersionHandler : DelegatingHandler
 
     var apiVersionHandlerOption = request.GetRequestOption<APIVersionOptions>() ?? _apiVersionOptions;
 
-    if (!request.Headers.Contains("X-GitHub-Api-Version") || !request.Headers.GetValues("X-GitHub-Api-Version").Any(x => apiVersionHandlerOption.APIVersion.Equals(x, StringComparison.OrdinalIgnoreCase)))
+    if (!request.Headers.Contains(ApiVersionHeaderKey) || !request.Headers.GetValues(ApiVersionHeaderKey).Any(x => apiVersionHandlerOption.APIVersion.Equals(x, StringComparison.OrdinalIgnoreCase)))
     {
-      request.Headers.Add("X-GitHub-Api-Version", apiVersionHandlerOption.APIVersion);
+      request.Headers.Add(ApiVersionHeaderKey, apiVersionHandlerOption.APIVersion);
     }
     return base.SendAsync(request, cancellationToken);
   }
