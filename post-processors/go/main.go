@@ -43,7 +43,6 @@ func run() error {
 
 		fileContents = fixImports(fileContents)
 		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
-		fileContents = removeModelsKiotaDoesNotCleanUp(fileContents)
 		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
@@ -187,25 +186,6 @@ func dirtyHackForVersionsRequestBuilder(inputFile string, fileName string) strin
     //     if v != nil {
     //         val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
     //     }`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
-func removeModelsKiotaDoesNotCleanUp(inputFile string) string {
-	toReplace := `// If specified, only code scanning alerts with this severity will be returned.
-    SeverityAsCodeScanningAlertSeverity *i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CodeScanningAlertSeverity ` + "`uriparametername:\"severity\"`"
-	replaceWith := ``
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `// If specified, only code scanning alerts with this state will be returned.
-    StateAsCodeScanningAlertStateQuery *i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CodeScanningAlertStateQuery ` + "`uriparametername:\"state\"`"
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)

@@ -4,7 +4,7 @@
 KIOTA_TOOL_NAME="microsoft.openapi.kiota"
 # This version can only increase, never decrease. If you want to use a lower version, you need to uninstall the tool first.
 # dotnet tool uninstall Microsoft.OpenApi.Kiota --global
-KIOTA_TOOL_VERSION="1.8.1" 
+KIOTA_TOOL_VERSION="1.8.2"
 
 # Check if the tool is installed globally
 if dotnet tool list -g | grep -q $KIOTA_TOOL_NAME; then
