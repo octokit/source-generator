@@ -2,11 +2,15 @@
 using GitHub.Octokit;
 using GitHub.Authentication;
 
+const string Org = "octokit";
+const string Repo = "octokit.net";
+
+
 var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
 var octokitRequest = OctokitRequestAdapter.Create(new GitHubTokenAuthenticationProvider("Octokit.Gen",token));
 var gitHubClient = new OctokitClient(octokitRequest);
 
-var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
+var pullRequests = await gitHubClient.Repos[Org][Repo].Pulls.GetAsync();
 
 if (pullRequests == null)
 {
@@ -18,7 +22,7 @@ foreach(var pullRequest in pullRequests)
 {
   Console.WriteLine($"#{pullRequest.Number} - {pullRequest.Title}");
 
-  var pullRequestComnments = await gitHubClient.Repos["octokit"]["octokit.net"]
+  var pullRequestComnments = await gitHubClient.Repos[Org][Repo]
     .Pulls[pullRequest.Number.Value]
     .Comments.GetAsync();
   if (pullRequestComnments == null)

@@ -54,7 +54,7 @@ public class GitHubTokenAuthenticationProvider : IAuthenticationProvider
 
     if(!request.Headers.ContainsKey(AuthorizationHeaderKey))
     {
-      request.Headers.Add(AuthorizationHeaderKey, Token);
+      request.Headers.Add(AuthorizationHeaderKey, $"Bearer {Token}");
     }
   }
 }
