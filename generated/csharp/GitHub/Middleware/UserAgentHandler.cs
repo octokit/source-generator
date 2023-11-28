@@ -21,7 +21,8 @@ public class UserAgentHandler : DelegatingHandler
 
         var userAgentHandlerOption = request.GetRequestOption<UserAgentOptions>() ?? _userAgentOption;
 
-        if(!request.Headers.UserAgent.Any(x => userAgentHandlerOption.ProductName.Equals(x.Product?.Name, StringComparison.OrdinalIgnoreCase)))
+        if(!request.Headers.UserAgent
+          .Any(x => userAgentHandlerOption.ProductName.Equals(x.Product?.Name, StringComparison.OrdinalIgnoreCase)))
         {
             request.Headers.UserAgent.Add(new ProductInfoHeaderValue(userAgentHandlerOption.ProductName, userAgentHandlerOption.ProductVersion));
         }

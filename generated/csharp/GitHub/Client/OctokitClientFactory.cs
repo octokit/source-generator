@@ -31,6 +31,7 @@ public static class OctokitClientFactory
         {
             new APIVersionHandler(),
             new UserAgentHandler(),
+            new MediaTypeHandler(),
         };
     }
 

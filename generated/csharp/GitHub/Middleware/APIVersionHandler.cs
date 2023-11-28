@@ -25,7 +25,9 @@ class APIVersionHandler : DelegatingHandler
 
     var apiVersionHandlerOption = request.GetRequestOption<APIVersionOptions>() ?? _apiVersionOptions;
 
-    if (!request.Headers.Contains(ApiVersionHeaderKey) || !request.Headers.GetValues(ApiVersionHeaderKey).Any(x => apiVersionHandlerOption.APIVersion.Equals(x, StringComparison.OrdinalIgnoreCase)))
+    if (!request.Headers.Contains(ApiVersionHeaderKey) 
+    || !request.Headers.GetValues(ApiVersionHeaderKey)
+      .Any(x => apiVersionHandlerOption.APIVersion.Equals(x, StringComparison.OrdinalIgnoreCase)))
     {
       request.Headers.Add(ApiVersionHeaderKey, apiVersionHandlerOption.APIVersion);
     }
