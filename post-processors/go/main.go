@@ -43,7 +43,6 @@ func run() error {
 
 		fileContents = fixImports(fileContents)
 		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
-		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
@@ -161,36 +160,6 @@ func fixImports(inputFile string) string {
 	// find: go-sdk/
 	// replace: github.com/octokit/go-sdk/
 	inputFile = strings.ReplaceAll(inputFile, `"octokit/`, `"github.com/octokit/go-sdk/github/octokit/`)
-	return inputFile
-}
-
-func dirtyHackForVersionsRequestBuilder(inputFile string, fileName string) string {
-	if !strings.Contains(fileName, "versions_request_builder.go") {
-		return inputFile
-	}
-
-	toReplace := `
-	"github.com/microsoft/kiota-abstractions-go/serialization"`
-	replaceWith := ``
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `for i, v := range res {
-        if v != nil {
-            val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-        }
-    }`
-	replaceWith = `// for i, v := range res {
-    //     if v != nil {
-    //         val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-    //     }`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
 	return inputFile
 }
 
