@@ -52,12 +52,15 @@ jobs:
           cd ../go-sdk
           go build ./...
 
-      - uses: kfcampbell/create-or-update-pull-request-action@cd-path
+      - uses: gr2m/create-or-update-pull-request-action@cd-path
+        if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
         with:
           title: "Changes in generated code"
-          body: "The latest OpenAPI spec resulted in changes to the generated code."
+          body: >
+            "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an appropriate
+            commit message, merge, and tag a release as appropriate."
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
