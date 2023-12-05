@@ -41,7 +41,6 @@ func run() error {
 			return fmt.Errorf("input file %v must not be empty", file.Name())
 		}
 
-		fileContents = fixImports(fileContents)
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
@@ -152,14 +151,6 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	}
 	files[path] = info
 	return nil
-}
-
-// these fixes are working around bugs or limitations in Kiota and/or our schema
-func fixImports(inputFile string) string {
-	// find: go-sdk/
-	// replace: github.com/octokit/go-sdk/
-	inputFile = strings.ReplaceAll(inputFile, `"octokit/`, `"github.com/octokit/go-sdk/github/octokit/`)
-	return inputFile
 }
 
 // see https://github.com/microsoft/kiota/issues/3700
