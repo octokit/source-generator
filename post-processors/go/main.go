@@ -42,7 +42,6 @@ func run() error {
 		}
 
 		fileContents = fixImports(fileContents)
-		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
@@ -163,23 +162,7 @@ func fixImports(inputFile string) string {
 	return inputFile
 }
 
-func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) string {
-	toReplace := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue, errorMapping)`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i8bb20811a612dd15efa26f086111481a68f72cd9ac5da7a939a417131078d77e.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
+// see https://github.com/microsoft/kiota/issues/3700
 func fixKiotaNonDeterminism(inputFile string, fileName string) string {
 	if !strings.Contains(fileName, "item_starred_repository.go") {
 		return inputFile
