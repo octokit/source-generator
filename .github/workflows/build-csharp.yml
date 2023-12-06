@@ -28,11 +28,16 @@ jobs:
       - name: Install kiota
         run: dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.2.0
 
+      - name: Clone the existing dotnet-sdk
+        run: |
+          cd ../
+          git clone https://github.com/octokit/dotnet-sdk.git
+
       - name: Download latest schema
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o generated/csharp/Octokit -c OctokitClient -n Octokit.Client -d schemas/downloaded.json
+        run: time kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/GitHub/Octokit -c OctokitClient -n Octokit.Client -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
@@ -44,3 +49,18 @@ jobs:
         run: |
           cd generated/csharp
           dotnet build
+
+      - uses: gr2m/create-or-update-pull-request-action@cd-path
+        # if: github.event_name != 'pull_request' # do not update the SDK on PR builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+        with:
+          title: "Changes in generated code"
+          body: >
+            "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate."
+          branch: "generated-code-update"
+          author: "Octokit Bot <octokitbot@martynus.net>"
+          commit-message: "New updates to generated code"
+          repository: "octokit/dotnet-sdk"
+          path-to-cd-to: "../dotnet-sdk"
