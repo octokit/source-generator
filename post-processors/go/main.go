@@ -41,9 +41,6 @@ func run() error {
 			return fmt.Errorf("input file %v must not be empty", file.Name())
 		}
 
-		fileContents = fixImports(fileContents)
-		fileContents = fixCreateDateOnlyFromDiscriminatorValue(fileContents, file.Name())
-		fileContents = dirtyHackForVersionsRequestBuilder(fileContents, file.Name())
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
 		// TODO(kfcampbell): verify file permission is what we want
@@ -156,61 +153,7 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	return nil
 }
 
-// these fixes are working around bugs or limitations in Kiota and/or our schema
-func fixImports(inputFile string) string {
-	// find: go-sdk/
-	// replace: github.com/octokit/go-sdk/
-	inputFile = strings.ReplaceAll(inputFile, `"octokit/`, `"github.com/octokit/go-sdk/github/octokit/`)
-	return inputFile
-}
-
-func dirtyHackForVersionsRequestBuilder(inputFile string, fileName string) string {
-	if !strings.Contains(fileName, "versions_request_builder.go") {
-		return inputFile
-	}
-
-	toReplace := `
-	"github.com/microsoft/kiota-abstractions-go/serialization"`
-	replaceWith := ``
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `for i, v := range res {
-        if v != nil {
-            val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-        }
-    }`
-	replaceWith = `// for i, v := range res {
-    //     if v != nil {
-    //         val[i] = *(v.(*i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.DateOnly))
-    //     }`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
-func fixCreateDateOnlyFromDiscriminatorValue(inputFile string, filename string) string {
-	toReplace := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith := `res, err := m.requestAdapter.SendCollection(ctx, requestInfo, i158396662f32fe591e8faa247af18558546841dba91f24f5c824e11e34188830.CreateBasicErrorFromDiscriminatorValue, errorMapping)`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.CreateDateOnlyFromDiscriminatorValue, errorMapping)`
-	replaceWith = `res, err := m.BaseRequestBuilder.RequestAdapter.SendCollection(ctx, requestInfo, i8bb20811a612dd15efa26f086111481a68f72cd9ac5da7a939a417131078d77e.CreateKeySimpleFromDiscriminatorValue, errorMapping)`
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	return inputFile
-}
-
+// see https://github.com/microsoft/kiota/issues/3700
 func fixKiotaNonDeterminism(inputFile string, fileName string) string {
 	if !strings.Contains(fileName, "item_starred_repository.go") {
 		return inputFile
