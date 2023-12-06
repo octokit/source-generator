@@ -43,7 +43,7 @@ jobs:
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
 
       - name: Run post-processing
-        run: post-processors/csharp/post-processor $(pwd)/generated/csharp/Octokit
+        run: post-processors/csharp/post-processor $(pwd)/../dotnet-sdk/GitHub/Octokit
 
       - name: Build generated and processed SDK
         run: |
