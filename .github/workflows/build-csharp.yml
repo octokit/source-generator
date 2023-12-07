@@ -17,30 +17,50 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '7.x.x'
+          dotnet-version: '8.x.x'
 
       - uses: actions/setup-go@v3.5.0
         with:
-          go-version: '1.20.4'
+          go-version: '1.21.5'
 
       - name: Install kiota
-        run: dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.2.0
+        run: dotnet tool install --global Microsoft.OpenApi.Kiota --prerelease
+
+      - name: Clone the existing dotnet-sdk
+        run: |
+          cd ../
+          git clone https://github.com/octokit/dotnet-sdk.git
 
       - name: Download latest schema
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o generated/csharp/Octokit -c OctokitClient -n Octokit.Client -d schemas/downloaded.json
+        run: time kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/GitHub/Octokit -c OctokitClient -n GitHub.Octokit -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
 
       - name: Run post-processing
-        run: post-processors/csharp/post-processor $(pwd)/generated/csharp/Octokit
+        run: post-processors/csharp/post-processor $(pwd)/../dotnet-sdk/GitHub/Octokit
 
       - name: Build generated and processed SDK
         run: |
-          cd generated/csharp
+          cd ../dotnet-sdk
           dotnet build
+
+      - uses: gr2m/create-or-update-pull-request-action@cd-path
+        # if: github.event_name != 'pull_request' # do not update the SDK on PR builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+        with:
+          title: "Changes in generated code"
+          body: >
+            The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate.
+          branch: "generated-code-update"
+          author: "Octokit Bot <octokitbot@martynus.net>"
+          commit-message: "New updates to generated code"
+          repository: "octokit/dotnet-sdk"
+          path-to-cd-to: "../dotnet-sdk"
