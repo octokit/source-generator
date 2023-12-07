@@ -1,4 +1,4 @@
-name: "Build and validate Go generated SDK"
+name: "Generate Go SDK"
 
 on:
   pull_request:
