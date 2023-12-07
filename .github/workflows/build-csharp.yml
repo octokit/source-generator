@@ -57,8 +57,8 @@ jobs:
         with:
           title: "Changes in generated code"
           body: >
-            "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
-            commit message, merge, and tag a release as appropriate."
+            The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate.
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
