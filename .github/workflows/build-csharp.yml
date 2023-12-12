@@ -37,13 +37,13 @@ jobs:
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/GitHub/Octokit -c OctokitClient -n GitHub.Octokit -d schemas/downloaded.json
+        run: time kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/src/GitHub -c GitHubClient -n GitHub -d schemas/downloaded.json
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
 
       - name: Run post-processing
-        run: post-processors/csharp/post-processor $(pwd)/../dotnet-sdk/GitHub/Octokit
+        run: post-processors/csharp/post-processor $(pwd)/../dotnet-sdk/src/GitHub
 
       - name: Build generated and processed SDK
         run: |
