@@ -9,7 +9,7 @@
 set -ex
 
 go run schemas/main.go --schema-next=false
-kiota generate -l go --ll trace -o $(pwd)/../go-sdk/pkg/github -n github.com/octokit/go-sdk/pkg/github -d schemas/downloaded.json
+kiota generate -l go --ll trace -o $(pwd)/../go-sdk/pkg/github -n github.com/octokit/go-sdk/pkg/github -d schemas/downloaded.json --ebc
 go build -o post-processors/go/post-processor post-processors/go/main.go
 cd $(pwd)/../go-sdk
 $(pwd)/../source-generator/post-processors/go/post-processor $(pwd)
