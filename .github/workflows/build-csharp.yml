@@ -37,7 +37,7 @@ jobs:
         run: go run schemas/main.go --schema-next=false
 
       - name: Run generation
-        run: time kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/src/GitHub -c GitHubClient -n GitHub -d schemas/downloaded.json
+        run: kiota generate -l csharp --ll trace -o $(pwd)/../dotnet-sdk/src/GitHub -c GitHubClient -n GitHub -d schemas/downloaded.json --ebc
 
       - name: Build post-processing
         run: go build -o post-processors/csharp/post-processor post-processors/csharp/main.go
