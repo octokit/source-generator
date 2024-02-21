@@ -19,10 +19,21 @@ jobs:
         with:
           go-version: '1.22'
           cache: false
-      - name: golangci-lint
+      - name: lint go post-processor
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.56
+          args: post-processors/go/main.go
+      - name: lint csharp post-processor
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.56
+          args: post-processors/csharp/main.go
+      - name: lint schema tooling
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.56
+          args: schemas/main.go
 
           # Optional: golangci-lint command line arguments.
           #
