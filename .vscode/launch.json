@@ -5,23 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C#: GitHub.Octokit Debug",
-      "type": "dotnet",
-      "request": "launch",
-      "projectPath": "${workspaceFolder}/generated/csharp/GitHub/GitHub.Octokit.csproj"
-    },
-    {
-      "name": ".NET Core Launch (console)",
-      "type": "coreclr",
-      "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/generated/csharp/bin/Debug/net7.0/csharp.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "stopAtEntry": false
-    },
-    {
       "name": "Debug Go post-processing",
       "type": "go",
       "request": "launch",
