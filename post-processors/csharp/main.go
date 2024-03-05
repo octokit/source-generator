@@ -42,15 +42,14 @@ func run() error {
 			fileContents = fixStringToBool(fileContents)
 		}
 
-    if file.Name() == "WebhookConfigInsecureSsl.cs" {
+		if file.Name() == "WebhookConfigInsecureSsl.cs" {
 			fileContents = fixUsing(fileContents)
 		}
 
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixPagesPaths(fileContents)
 
-		// TODO(kfcampbell): verify file permission is what we want
-		err = os.WriteFile(path, []byte(fileContents), 0666)
+		err = os.WriteFile(path, []byte(fileContents), 0600)
 		if err != nil {
 			return err
 		}

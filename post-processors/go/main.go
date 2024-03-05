@@ -43,8 +43,7 @@ func run() error {
 
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 
-		// TODO(kfcampbell): verify file permission is what we want
-		err = os.WriteFile(path, []byte(fileContents), 0666)
+		err = os.WriteFile(path, []byte(fileContents), 0600)
 		if err != nil {
 			return err
 		}
@@ -124,7 +123,7 @@ func run() error {
 	stdout.Reset()
 	stderr.Reset()
 
-	output, err = cmd.Output()
+	_, err = cmd.Output()
 	if err != nil {
 		fmt.Printf("could not run go mod tidy: %v\nfull error log:\n%s", err, stderr.String())
 	}
