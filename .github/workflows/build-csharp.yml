@@ -48,6 +48,7 @@ jobs:
       - name: Build generated and processed SDK
         run: |
           cd ../dotnet-sdk
+          dotnet update package *
           dotnet build
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
