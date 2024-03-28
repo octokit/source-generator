@@ -48,7 +48,8 @@ jobs:
       - name: Build generated and processed SDK
         run: |
           cd ../dotnet-sdk
-          dotnet update package *
+          dotnet tool install --global dotnet-outdated-tool
+          dotnet-outdated --upgrade
           dotnet build
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
