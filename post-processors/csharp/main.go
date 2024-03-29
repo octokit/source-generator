@@ -70,7 +70,7 @@ func run() error {
 			return fmt.Errorf("could not run kiota info: %v\n", err)
 	}
 
-  // Parse the json returned by kiota info, extract the "dependencies" field,
+	// Parse the json returned by kiota info, extract the "dependencies" field,
 	// and construct a "dotnet add package" command for each with the "name" and "version" subfields used.
 	var infoResult map[string]interface{}
 	if err := json.Unmarshal(output, &infoResult); err != nil {
