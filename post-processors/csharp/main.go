@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -57,62 +56,43 @@ func run() error {
 			return err
 		}
 	}
+  
+  initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
+  packageInstallDir := fmt.Sprintf("%s/../dotnet-sdk/src", initialDir)
 
-
-  // cmd := exec.Command("dotnet", "mod", "init", "github.com/octokit/go-sdk")
-	// cmd.Dir = dirPath
-  // var stdout, stderr bytes.Buffer
-	// cmd.Stdout = &stdout
-	// cmd.Stderr = &stderr
-
-  // _ = stdout.String()
-  // stderrOutput := stderr.String()
-
-	// if err != nil {
-	// 	return fmt.Errorf("could not initialize Go module: %v\nfull error log:\n%s", err, stderrOutput)
-	// }
-
-  cmd := exec.Command("kiota", "info", "-l", "csharp", "--json")
+  // Run the kiota info command to get the dependencies for the project
+  cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
   cmd.Dir = dirPath
-
-  var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
+  
   output, err := cmd.Output()
+
   if err != nil {
-    fmt.Printf("could not run kiota info: %v\nfull error log:\n%s", err, stderr.String())
+      return fmt.Errorf("could not run kiota info: %v\n", err)
   }
 
-  // parse the json returned by kiota info, extract the "dependencies" field,
+  // Parse the json returned by kiota info, extract the "dependencies" field,
 	// and construct a "dotnet add package" command for each with the "name" and "version" subfields used.
-  // Hoisted from post-processors/go/main.go
 	var infoResult map[string]interface{}
 	if err := json.Unmarshal(output, &infoResult); err != nil {
 		return fmt.Errorf("could not parse kiota info output: %v", err)
 	}
 	deps := infoResult["dependencies"].([]interface{})
-	depsToInstall := make([]string, len(deps))
-	for i, d := range deps {
+
+	for _, d := range deps {
+
 		dep := d.(map[string]interface{})
 		name := dep["name"].(string)
 		version := dep["version"].(string)
 
-		fullDep := fmt.Sprintf("%s --version %s", name, version)
-		depsToInstall[i] = fullDep
-	}
-
-	for _, dep := range depsToInstall {
-		cmd = exec.Command("dotnet", "add package", dep)
-		cmd.Dir = dirPath
+    cmd = exec.Command("dotnet", "add", "package", name, "--version", version)
+    cmd.Dir = packageInstallDir
 
 		_, err := cmd.Output()
 		if err != nil {
-			return fmt.Errorf("could not get dependencies: %v", err)
+			return fmt.Errorf("could not update dependency: %s\n - %v", dep, err)
 		}
 		fmt.Printf("installed dependency %s\n", dep)
 	}
-
 	return nil
 }
 
