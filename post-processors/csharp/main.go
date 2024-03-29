@@ -79,7 +79,6 @@ func run() error {
 	deps := infoResult["dependencies"].([]interface{})
 
 	for _, d := range deps {
-
 		dep := d.(map[string]interface{})
 		name := dep["name"].(string)
 		version := dep["version"].(string)
