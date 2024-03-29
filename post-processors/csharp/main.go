@@ -56,19 +56,19 @@ func run() error {
 			return err
 		}
 	}
-  
-  initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
-  packageInstallDir := fmt.Sprintf("%s/../dotnet-sdk/src", initialDir)
 
-  // Run the kiota info command to get the dependencies for the project
-  cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
-  cmd.Dir = dirPath
-  
-  output, err := cmd.Output()
+	initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
+	packageInstallDir := fmt.Sprintf("%s/../dotnet-sdk/src", initialDir)
 
-  if err != nil {
-      return fmt.Errorf("could not run kiota info: %v\n", err)
-  }
+	// Run the kiota info command to get the dependencies for the project
+	cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
+	cmd.Dir = dirPath
+
+	output, err := cmd.Output()
+
+	if err != nil {
+			return fmt.Errorf("could not run kiota info: %v\n", err)
+	}
 
   // Parse the json returned by kiota info, extract the "dependencies" field,
 	// and construct a "dotnet add package" command for each with the "name" and "version" subfields used.
@@ -84,8 +84,8 @@ func run() error {
 		name := dep["name"].(string)
 		version := dep["version"].(string)
 
-    cmd = exec.Command("dotnet", "add", "package", name, "--version", version)
-    cmd.Dir = packageInstallDir
+		cmd = exec.Command("dotnet", "add", "package", name, "--version", version)
+		cmd.Dir = packageInstallDir
 
 		_, err := cmd.Output()
 		if err != nil {
