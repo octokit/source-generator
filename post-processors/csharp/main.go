@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -55,6 +57,38 @@ func run() error {
 		}
 	}
 
+	initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
+	packageInstallDir := fmt.Sprintf("%s/../dotnet-sdk/src", initialDir)
+
+	cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
+	cmd.Dir = dirPath
+
+	output, err := cmd.Output()
+
+	if err != nil {
+			return fmt.Errorf("could not run kiota info: %v\n", err)
+	}
+
+	var infoResult map[string]interface{}
+	if err := json.Unmarshal(output, &infoResult); err != nil {
+		return fmt.Errorf("could not parse kiota info output: %v", err)
+	}
+	deps := infoResult["dependencies"].([]interface{})
+
+	for _, d := range deps {
+		dep := d.(map[string]interface{})
+		name := dep["name"].(string)
+		version := dep["version"].(string)
+
+		cmd = exec.Command("dotnet", "add", "package", name, "--version", version)
+		cmd.Dir = packageInstallDir
+
+		_, err := cmd.Output()
+		if err != nil {
+			return fmt.Errorf("could not update dependency: %s\n - %v", dep, err)
+		}
+		fmt.Printf("installed dependency %s\n", dep)
+	}
 	return nil
 }
 
