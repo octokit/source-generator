@@ -74,13 +74,13 @@
     # "/" will be replaced by current OS file path separator to properly work
     # on Windows.
 
-    # skipping pkg/github/markdown/raw_request_builder.go's error of
+    # skipping github/markdown/raw_request_builder.go's error of
     # "G104: Errors unhandled.
     # "requestInfo.SetContentFromScalar(ctx, m.BaseRequestBuilder.RequestAdapter, "text/plain", body)"
     # because it happens due to generation and is not quickly fixed.
     # 'exclude' cannot be used here because the error text applies to many possible errors
     # and we don't want to ignore other instances of this error
-    skip-files = [ "pkg/github/markdown/raw_request_builder.go" ]
+    skip-files = [ "github/markdown/raw_request_builder.go" ]
 
     # by default isn't set. If set we pass it to "go list -mod={option}". From "go help modules":
     # If invoked with -mod=readonly, the go command is disallowed from the implicit
