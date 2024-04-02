@@ -8,7 +8,12 @@
 
 set -ex
 
-go run schemas/main.go --schema-next=false
+if [ -z "$1" ]; then 
+  go run schemas/main.go --schema-next=false
+elif [ "$1" = "ghes" ]; then
+  go run schemas/main.go --schema-next=false --ghes=true
+fi
+
 kiota generate -l go --ll trace -o $(pwd)/../go-sdk/pkg/github -n github.com/octokit/go-sdk/pkg/github -d schemas/downloaded.json --ebc
 go build -o post-processors/go/post-processor post-processors/go/main.go
 cd $(pwd)/../go-sdk
