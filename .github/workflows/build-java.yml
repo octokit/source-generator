@@ -1,0 +1,67 @@
+name: "Generate Java SDK"
+
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Run generation nightly on latest OpenAPI spec
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: maven
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
+
+      - uses: actions/setup-go@v3.5.0
+        with:
+          go-version: '1.21.5'
+
+      - name: Install kiota
+        run: dotnet tool install --global Microsoft.OpenApi.Kiota --prerelease
+
+      - name: Clone the existing dotnet-sdk
+        run: |
+          cd ../
+          git clone https://github.com/octokit/java-sdk.git
+
+      - name: Download latest schema
+        run: go run schemas/main.go --schema-next=false
+
+      - name: Run generation
+        run: kiota generate -l java --ll trace -o $(pwd)/../java-sdk/src/main/java/com/github/api -c GitHubClient -n com.github.api -d schemas/downloaded.json --serializer none --deserializer none --ebc
+
+      - name: Build generated and processed SDK
+        run: |
+          cd ../java-sdk
+          mvn clean install
+
+      - uses: gr2m/create-or-update-pull-request-action@cd-path
+        if: github.event_name != 'pull_request' # do not update the SDK on PR builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+        with:
+          title: "Changes in generated code"
+          body: >
+            The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate.
+          branch: "generated-code-update"
+          author: "Octokit Bot <octokitbot@martynus.net>"
+          commit-message: "New updates to generated code"
+          repository: "octokit/java-sdk"
+          path-to-cd-to: "../java-sdk"
