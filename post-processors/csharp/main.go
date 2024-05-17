@@ -50,6 +50,8 @@ func run() error {
 
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixPagesPaths(fileContents)
+		fileContents = fixKiotaTeamErrors(fileContents, path)
+		fileContents = fixKiotaUntypedNodeErrors(fileContents, path)
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
 		if err != nil {
@@ -66,7 +68,7 @@ func run() error {
 	output, err := cmd.Output()
 
 	if err != nil {
-			return fmt.Errorf("could not run kiota info: %v\n", err)
+		return fmt.Errorf("could not run kiota info: %v\n", err)
 	}
 
 	var infoResult map[string]interface{}
@@ -146,5 +148,55 @@ func fixPagesPaths(inputFile string) string {
 	// find: Path = PagesPostRequestBody_source_path.;
 	// replace: Path = PagesPostRequestBody_source_path.Root;
 	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "Path = PagesPostRequestBody_source_path.Docs;")
+	return inputFile
+}
+
+func fixKiotaTeamErrors(inputFile string, filePath string) string {
+	if !strings.Contains(filePath, "Orgs/Item/Invitations/Item/Teams/TeamsRequestBuilder.cs") &&
+		!strings.Contains(filePath, "Orgs/Item/OrganizationRoles/Item/Teams/TeamsRequestBuilder.cs") &&
+		!strings.Contains(filePath, "Orgs/Item/Teams/Item/Teams/TeamsRequestBuilder.cs") &&
+		!strings.Contains(filePath, "Orgs/Item/Teams/TeamsRequestBuilder.cs") {
+		return inputFile
+	}
+
+	toReplace := "Task<List<Team>"
+	replaceWith := "Task<List<GitHub.Models.Team>"
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = "SendCollectionAsync<Team>"
+	replaceWith = "SendCollectionAsync<GitHub.Models.Team>"
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = "Team.CreateFromDiscriminatorValue"
+	replaceWith = "GitHub.Models.Team.CreateFromDiscriminatorValue"
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	return inputFile
+}
+
+func fixKiotaUntypedNodeErrors(inputFile string, filePath string) string {
+	// toreplace:
+	// SendAsync<UntypedNode>(requestInfo, default, cancellationToken)
+	// replaceWith:
+	// SendAsync<UntypedNode>(requestInfo, UntypedNode.CreateFromDiscriminatorValue, default, cancellationToken)
+
+	if !strings.Contains(filePath, "Repos/Item/Item/Stats/Punch_card/Punch_cardRequestBuilder.cs") &&
+		!strings.Contains(filePath, "Repos/Item/Item/Stats/Code_frequency/Code_frequencyRequestBuilder.cs") {
+		return inputFile
+	}
+
+	toReplace := "SendAsync<UntypedNode>(requestInfo, default, cancellationToken)"
+	replaceWith := "SendAsync<UntypedNode>(requestInfo, UntypedNode.CreateFromDiscriminatorValue, default, cancellationToken)"
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
 	return inputFile
 }
