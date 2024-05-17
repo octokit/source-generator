@@ -181,11 +181,6 @@ func fixKiotaTeamErrors(inputFile string, filePath string) string {
 }
 
 func fixKiotaUntypedNodeErrors(inputFile string, filePath string) string {
-	// toreplace:
-	// SendAsync<UntypedNode>(requestInfo, default, cancellationToken)
-	// replaceWith:
-	// SendAsync<UntypedNode>(requestInfo, UntypedNode.CreateFromDiscriminatorValue, default, cancellationToken)
-
 	if !strings.Contains(filePath, "Repos/Item/Item/Stats/Punch_card/Punch_cardRequestBuilder.cs") &&
 		!strings.Contains(filePath, "Repos/Item/Item/Stats/Code_frequency/Code_frequencyRequestBuilder.cs") {
 		return inputFile
