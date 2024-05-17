@@ -42,6 +42,7 @@ func run() error {
 		}
 
 		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
+		fileContents = fixKiotaFileNameTypeNameError(fileContents, file.Name())
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
 		if err != nil {
@@ -169,6 +170,22 @@ type ItemStarredRepositoryable interface {
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
     i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
 }`
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+	return inputFile
+}
+
+func fixKiotaFileNameTypeNameError(inputFile string, fileName string) string {
+	if !strings.Contains(fileName, "code_scanning_variant_analysis.go") {
+		return inputFile
+	}
+
+	// Kiota's generation gives the file name rather than the type name in this
+	// specific case, so this workaround fixes it.
+	toReplace := "CodeScanningVariantAnalysis_status"
+	replaceWith := "CodeScanningVariantAnalysisStatus"
+
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
 	}

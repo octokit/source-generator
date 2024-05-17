@@ -7,7 +7,7 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56
 KIOTA_TOOL_NAME="microsoft.openapi.kiota"
 # This version can only increase, never decrease. If you want to use a lower version, you need to uninstall the tool first.
 # dotnet tool uninstall Microsoft.OpenApi.Kiota --global
-KIOTA_TOOL_VERSION="v1.9.0-preview.202311300001"
+KIOTA_TOOL_VERSION="1.15.0-preview.202405160001"
 
 # Check if the tool is installed globally
 if dotnet tool list -g | grep -q $KIOTA_TOOL_NAME; then
