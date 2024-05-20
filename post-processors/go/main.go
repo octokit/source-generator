@@ -41,7 +41,6 @@ func run() error {
 			return fmt.Errorf("input file %v must not be empty", file.Name())
 		}
 
-		fileContents = fixKiotaNonDeterminism(fileContents, file.Name())
 		fileContents = fixKiotaFileNameTypeNameError(fileContents, file.Name())
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
@@ -151,29 +150,6 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	}
 	files[path] = info
 	return nil
-}
-
-// see https://github.com/microsoft/kiota/issues/3700
-func fixKiotaNonDeterminism(inputFile string, fileName string) string {
-	if !strings.Contains(fileName, "item_starred_repository.go") {
-		return inputFile
-	}
-	// the extra space at the top of this string is because the Kiota
-	// generation leaves it in, but saving this file causes the Go formatter
-	// to remove the space and then the string won't match
-	toReplace := `// ItemStarredRepositoryable` + " " + `
-type ItemStarredRepositoryable interface {
-    IAdditionalDataHolder
-}`
-	replaceWith := `// ItemStarredRepositoryable
-type ItemStarredRepositoryable interface {
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.AdditionalDataHolder
-    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
-}`
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-	return inputFile
 }
 
 func fixKiotaFileNameTypeNameError(inputFile string, fileName string) string {
