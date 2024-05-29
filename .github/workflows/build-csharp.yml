@@ -26,7 +26,7 @@ jobs:
           go-version: '1.21.5'
 
       - name: Install kiota
-        run: dotnet tool install --global Microsoft.OpenApi.Kiota --prerelease
+        run: dotnet tool install --global Microsoft.OpenApi.Kiota
 
       - name: Clone the existing dotnet-sdk
         run: |
