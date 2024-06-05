@@ -18,3 +18,9 @@ generated/csharp/GitHub/Kiota
 post-processors/csharp/post-processor
 
 .DS_Store
+
+# keys
+**/*.pem
+
+# revolver-related
+stage/go-sdk/pkg/github/*
