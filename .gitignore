@@ -24,3 +24,4 @@ post-processors/csharp/post-processor
 
 # revolver-related
 stage/go-sdk/pkg/github/*
+stage/dotnet-sdk/src/GitHub/*
