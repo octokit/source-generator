@@ -1,3 +1,4 @@
+
 [linters]
 
     # set all to disabled so we can manually enable only the ones we want
@@ -74,6 +75,14 @@
     # "/" will be replaced by current OS file path separator to properly work
     # on Windows.
 
+    # skipping pkg/github/markdown/raw_request_builder.go's error of
+    # "G104: Errors unhandled.
+    # "requestInfo.SetContentFromScalar(ctx, m.BaseRequestBuilder.RequestAdapter, "text/plain", body)"
+    # because it happens due to generation and is not quickly fixed.
+    # 'exclude' cannot be used here because the error text applies to many possible errors
+    # and we don't want to ignore other instances of this error
+    skip-files = [ "pkg/github/markdown/raw_request_builder.go" ]
+
     # by default isn't set. If set we pass it to "go list -mod={option}". From "go help modules":
     # If invoked with -mod=readonly, the go command is disallowed from the implicit
     # automatic updating of go.mod described above. Instead, it fails when any changes
@@ -91,7 +100,7 @@
 [output]
     # colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
     # default is "colored-line-number"
-    formats = "colored-line-number"
+    format = "colored-line-number"
 
     # print lines of code with issue, default is true
     print-issued-lines = true
@@ -114,7 +123,7 @@
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
     default-severity = "error"
 
-    # If set to true severity-rules regular expressions become case sensitive.
+    # If set to true severity-rules regular expressions become case-sensitive.
     # The default value is false.
     case-sensitive = false
 
@@ -130,14 +139,6 @@
     #      severity = "warning"
 
 [issues]
-    # skipping pkg/github/markdown/raw_request_builder.go's error of
-    # "G104: Errors unhandled.
-    # "requestInfo.SetContentFromScalar(ctx, m.BaseRequestBuilder.RequestAdapter, "text/plain", body)"
-    # because it happens due to generation and is not quickly fixed.
-    # 'exclude' cannot be used here because the error text applies to many possible errors
-    # and we don't want to ignore other instances of this error
-    exclude-files = [ "pkg/github/markdown/raw_request_builder.go" ]
-
     # List of regexps of issue texts to exclude, empty list by default.
     # Please document every exception here so we know what we're suppressing and why.
     exclude = []
@@ -149,7 +150,7 @@
     max-same-issues = 0
 
     # The default value is false. If set to true exclude and exclude-rules
-    # regular expressions become case sensitive.
+    # regular expressions become case-sensitive.
     # exclude-case-sensitive = false
 
     # This flag suppresses lint issues from several linters, overriding any other configuration you have set.

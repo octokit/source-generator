@@ -22,17 +22,17 @@ jobs:
       - name: lint go post-processor
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.56
+          version: v1.59.1
           args: post-processors/go/main.go
       - name: lint csharp post-processor
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.56
+          version: v1.59.1
           args: post-processors/csharp/main.go
       - name: lint schema tooling
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.56
+          version: v1.59.1
           args: schemas/main.go
 
           # Optional: golangci-lint command line arguments.
