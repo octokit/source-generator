@@ -41,7 +41,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
         with:
-          title: "[Testing Purposes] Changes in generated code"
+          title: "Changes in generated code"
           body: >
             "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate."
