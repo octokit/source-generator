@@ -25,39 +25,23 @@ jobs:
         with:
           go-version: '1.21.5'
 
-      - name: Install kiota
-        run: dotnet tool install --global Microsoft.OpenApi.Kiota --version 1.14.0
+      - name: Run scripts/generate-go.sh
+        run: scripts/generate-go.sh
 
       - name: Clone the existing go-sdk
         run: |
           cd ../
           git clone https://github.com/octokit/go-sdk.git
 
-      - name: Download latest schema
-        run: go run schemas/main.go --schema-next=false
-
-      - name: Run generation
-        run: kiota generate -l go --ll trace -o $(pwd)/../go-sdk/pkg/github -n "github.com/octokit/go-sdk/pkg/github/" -d schemas/downloaded.json --ebc
-
-      - name: Build post-processing
-        run: go build -o post-processors/go/post-processor post-processors/go/main.go
-
-      - name: Run post-processing
-        run: |
-          cd ../go-sdk
-          ../source-generator/post-processors/go/post-processor $(pwd)
-
-      - name: Build generated and processed SDK
-        run: |
-          cd ../go-sdk
-          go build ./...
+      - name: Copy generated code to go-sdk
+        run: cp -rf stage/go-sdk/* ../go-sdk/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
         with:
-          title: "Changes in generated code"
+          title: "[Testing Purposes] Changes in generated code"
           body: >
             "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate."
