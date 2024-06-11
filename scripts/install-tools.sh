@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # note: check the version of golangci-lint used in .github/workflows/lint.yml to ensure accuracy
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1
 
 # Install Kiota
 KIOTA_TOOL_NAME="microsoft.openapi.kiota"

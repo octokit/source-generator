@@ -74,14 +74,6 @@
     # "/" will be replaced by current OS file path separator to properly work
     # on Windows.
 
-    # skipping pkg/github/markdown/raw_request_builder.go's error of
-    # "G104: Errors unhandled.
-    # "requestInfo.SetContentFromScalar(ctx, m.BaseRequestBuilder.RequestAdapter, "text/plain", body)"
-    # because it happens due to generation and is not quickly fixed.
-    # 'exclude' cannot be used here because the error text applies to many possible errors
-    # and we don't want to ignore other instances of this error
-    skip-files = [ "pkg/github/markdown/raw_request_builder.go" ]
-
     # by default isn't set. If set we pass it to "go list -mod={option}". From "go help modules":
     # If invoked with -mod=readonly, the go command is disallowed from the implicit
     # automatic updating of go.mod described above. Instead, it fails when any changes
@@ -99,7 +91,7 @@
 [output]
     # colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
     # default is "colored-line-number"
-    format = "colored-line-number"
+    formats = "colored-line-number"
 
     # print lines of code with issue, default is true
     print-issued-lines = true
@@ -138,6 +130,14 @@
     #      severity = "warning"
 
 [issues]
+    # skipping pkg/github/markdown/raw_request_builder.go's error of
+    # "G104: Errors unhandled.
+    # "requestInfo.SetContentFromScalar(ctx, m.BaseRequestBuilder.RequestAdapter, "text/plain", body)"
+    # because it happens due to generation and is not quickly fixed.
+    # 'exclude' cannot be used here because the error text applies to many possible errors
+    # and we don't want to ignore other instances of this error
+    exclude-files = [ "pkg/github/markdown/raw_request_builder.go" ]
+
     # List of regexps of issue texts to exclude, empty list by default.
     # Please document every exception here so we know what we're suppressing and why.
     exclude = []
