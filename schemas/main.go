@@ -73,7 +73,17 @@ func realMain() error {
 				return fmt.Errorf("invalid platform provided. platform must be one of dotcom, ghes, ghec. given platform: %s", platform)
 		}*/
 
-	out, err := os.Create("schemas/downloaded.json")
+	fileName := ""
+
+	if platform == "ghes" {
+		fileName = "schemas/" + platform + "-" + version + ".json"
+	} else if platform == "ghec" {
+		fileName = "schemas/" + platform + ".json"
+	} else {
+		fileName = "schemas/api.github.com.json"
+	}
+
+	out, err := os.Create(fileName)
 	if err != nil {
 		return err
 	}
