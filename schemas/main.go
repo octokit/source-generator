@@ -61,48 +61,40 @@ func realMain() error {
 		return fmt.Errorf("version may not be specified for given platform: %s", platform)
 	}
 
-	/*
-		switch platform {
-			case "ghes":
-				break
-			case "ghec":
-				break
-			case "dotcom":
-				break
-			default:
-				return fmt.Errorf("invalid platform provided. platform must be one of dotcom, ghes, ghec. given platform: %s", platform)
-		}*/
-
-	fileName := ""
+	fileExt := ".json"
+	fileName := "api.github.com"
 
 	if platform == "ghes" {
-		fileName = "schemas/" + platform + "-" + version + ".json"
+		fileName = platform + "-" + version
 	} else if platform == "ghec" {
-		fileName = "schemas/" + platform + ".json"
-	} else {
-		fileName = "schemas/api.github.com.json"
+		fileName = platform
 	}
 
-	out, err := os.Create(fileName)
+	out, err := os.Create("schemas/" + fileName + fileExt)
 	if err != nil {
 		return err
 	}
+
 	defer out.Close()
 
 	logMsg := "Downloading latest schema from descriptions directory"
-	url := "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json"
+	url := "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/" + fileName + "/" + fileName + fileExt
 	if useSchemaNext {
 		logMsg = "Downloading latest schema from descriptions-next directory"
-		url = "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions-next/api.github.com/api.github.com.json"
+		url = "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions-next/" + fileName + "/" + fileName + fileExt
 	}
 
 	log.Printf(logMsg)
 	resp, err := http.Get(url)
+
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		return fmt.Errorf("Received 404 Not Found for url: %s", url)
+	}
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
 		return err
