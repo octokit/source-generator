@@ -21,10 +21,22 @@ const (
 	ghec
 )
 
-var allowedPlatforms = []string{"dotcom", "ghes", "ghec"}
+var platformTypeMap = map[string]platformType{
+	"dotcom": dotcom,
+	"ghes":   ghes,
+	"ghec":   ghec,
+}
 
-// Normally I hate using init() but the docs [here](https://pkg.go.dev/flag)
-// recommend it so this usage is safe.
+func (p platformType) String() string {
+	return [...]string{"dotcom", "ghes", "ghec"}[p]
+}
+
+func isValidPlatform(value string) (platformType, bool) {
+	platform, exists := platformTypeMap[value]
+	return platform, exists
+}
+
+// Docs [here](https://pkg.go.dev/flag) recommends this approach.
 func init() {
 	flag.BoolVar(&useSchemaNext, "schema-next", false, "Set to true using --schema-next=true to use the descriptions-next directory for schema downloads")
 	flag.StringVar(&platform, "platform", "dotcom", "Set the platform to download the schema for. Options are dotcom, ghes, ghec")
@@ -41,36 +53,30 @@ func main() {
 func realMain() error {
 	flag.Parse()
 
-	foundPlatform := false
-	for _, p := range allowedPlatforms {
-		if p == platform {
-			foundPlatform = true
-			break
-		}
-	}
-
-	if foundPlatform == false {
+	if _, valid := isValidPlatform(platform); valid == false {
 		return fmt.Errorf("invalid platform provided. platform must be one of dotcom, ghes, ghec. given platform: %s", platform)
 	}
 
-	if platform == "ghes" && version == "" {
+	if platform == platformType.String(ghes) && version == "" {
 		return fmt.Errorf("version is required for GHES platform")
 	}
 
-	if (platform == "dotcom" || platform == "ghec") && version != "" {
+	if (platform == platformType.String(dotcom) || platform == platformType.String(ghec)) && version != "" {
 		return fmt.Errorf("version may not be specified for given platform: %s", platform)
 	}
 
 	fileExt := ".json"
 	fileName := "api.github.com"
 
-	if platform == "ghes" {
+	if platform == platformType.String(ghes) {
 		fileName = platform + "-" + version
-	} else if platform == "ghec" {
+	} else if platform == platformType.String(ghec) {
 		fileName = platform
 	}
 
-	out, err := os.Create("schemas/" + fileName + fileExt)
+	downloadedFile := "schemas/" + fileName + fileExt
+
+	out, err := os.Create(downloadedFile)
 	if err != nil {
 		return err
 	}
@@ -93,6 +99,11 @@ func realMain() error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound {
+		// Clean up the created file
+		err := os.Remove(downloadedFile)
+		if err != nil {
+			return fmt.Errorf("Error deleting file: %s. Error: %s", downloadedFile, err)
+		}
 		return fmt.Errorf("Received 404 Not Found for url: %s", url)
 	}
 	_, err = io.Copy(out, resp.Body)
