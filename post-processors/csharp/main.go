@@ -60,7 +60,7 @@ func run() error {
 	}
 
 	initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
-	packageInstallDir := fmt.Sprintf("%s/stage/dotnet-sdk/src", initialDir)
+	packageInstallDir := fmt.Sprintf("%s/stage/dotnet/dotnet-sdk/src", initialDir)
 
 	cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
 	cmd.Dir = dirPath

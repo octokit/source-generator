@@ -34,7 +34,7 @@ jobs:
           git clone https://github.com/octokit/dotnet-sdk.git
 
       - name: Copy generated code to dotnet-sdk
-        run: cp -rf stage/dotnet-sdk/* ../dotnet-sdk/
+        run: cp -rf stage/dotnet/dotnet-sdk/* ../dotnet-sdk/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
