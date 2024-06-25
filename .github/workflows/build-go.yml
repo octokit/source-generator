@@ -34,7 +34,7 @@ jobs:
           git clone https://github.com/octokit/go-sdk.git
 
       - name: Copy generated code to go-sdk
-        run: cp -rf stage/go-sdk/* ../go-sdk/
+        run: cp -rf stage/go/go-sdk/* ../go-sdk/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds

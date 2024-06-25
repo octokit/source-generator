@@ -1,7 +1,7 @@
 openapitools.json
 nuget.exe
 output.txt
-schemas/downloaded.json
+schemas/*.json
 
 # GO Related
 generated/go/*
@@ -23,5 +23,5 @@ post-processors/csharp/post-processor
 **/*.pem
 
 # revolver-related
-stage/go-sdk/pkg/github/*
-stage/dotnet-sdk/src/GitHub/*
+stage/go/*/pkg/github/*
+stage/dotnet/*/src/GitHub/*
