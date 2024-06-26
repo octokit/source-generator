@@ -59,7 +59,12 @@ func run() error {
 		return fmt.Errorf("could not remove go.sum file: %v", err)
 	}
 
-	cmd := exec.Command("go", "mod", "init", "github.com/octokit/go-sdk")
+	// get the immediate parent directory name as this is the name of the module
+	// e.g. if the directory is /path/to/go-sdk, the module name is go-sdk
+	_, partialModuleName := filepath.Split(dirPath)
+	fullModuleName := fmt.Sprintf("github.com/octokit/%s", partialModuleName)
+
+	cmd := exec.Command("go", "mod", "init", fullModuleName)
 	cmd.Dir = dirPath
 
 	var stdout, stderr bytes.Buffer

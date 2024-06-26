@@ -61,10 +61,6 @@ func realMain() error {
 		return fmt.Errorf("version is required for GHES platform")
 	}
 
-	if (platform == platformType.String(dotcom) || platform == platformType.String(ghec)) && version != "" {
-		return fmt.Errorf("version may not be specified for given platform: %s", platform)
-	}
-
 	fileExt := ".json"
 	fileName := "api.github.com"
 
