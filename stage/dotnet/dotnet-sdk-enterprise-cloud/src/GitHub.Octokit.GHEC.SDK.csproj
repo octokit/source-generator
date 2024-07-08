@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <PackageId>GitHub.Octokit.GHEC.SDK</PackageId>
+    <Version>0.0.1-alpha</Version>
+    <NuGetVersion>0.0.1-alpha</NuGetVersion>
+    <Title>Octokit</Title>
+    <Description>
+    This is an auto-generated SDK for GitHub's REST API for the GitHub Enterprise Cloud product, built on Kiota.
+    </Description>
+    <Authors>GitHub</Authors>
+    <PackageTags>GitHub API Octokit dotnet-core enterprise cloud</PackageTags>
+    <RepositoryUrl>https://github.com/octokit/dotnet-sdk-enterprise-cloud</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/octokit/dotnet-sdk-enterprise-cloud</PackageProjectUrl>
+    <PackageIcon>octokit.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>NugetREADME.md</PackageReadmeFile>
+    <Copyright>Copyright (c) GitHub 2023-$([System.DateTime]::Now.ToString('yyyy'))</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- The below NoWarn is due to Kiota generating code marked as Obsolete.
+      This is expected, but we still want to error on other warnings from analyzers. -->
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.5.1" />
+    <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.8.4" />
+    <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Form" Version="1.1.6" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Json" Version="1.2.3" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Multipart" Version="1.1.4" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Text" Version="1.1.5" />
+    <PackageReference Include="Microsoft.Kiota.Authentication.Azure" Version="1.1.5" />
+    <None Include="NugetREADME.md" Pack="true" PackagePath="\" />
+    <None Include="octokit.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
