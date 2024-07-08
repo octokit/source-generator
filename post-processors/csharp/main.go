@@ -60,7 +60,13 @@ func run() error {
 	}
 
 	initialDir, _ := os.Getwd() // Used for the dotnet add package command and traversal
-	packageInstallDir := fmt.Sprintf("%s/stage/dotnet/dotnet-sdk/src", initialDir)
+
+	// get the directory two directories up as this is the name of the module
+	// the directory structure should look something like dotcom-sdk/src/GitHub,
+	// where the module name is dotcom-sdk
+	pathDirectories := strings.Split(filepath.Clean(dirPath), string(filepath.Separator))
+	partialModuleName := pathDirectories[len(pathDirectories)-3]
+	packageInstallDir := fmt.Sprintf("%s/stage/dotnet/%s/src", initialDir, partialModuleName)
 
 	cmd := exec.Command("kiota", "info", "-l", "CSharp", "--json")
 	cmd.Dir = dirPath

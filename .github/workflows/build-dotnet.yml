@@ -8,8 +8,10 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  build:
+  cloud-builds:
     strategy:
+      matrix:
+        platform: [dotcom, ghec]
       fail-fast: false
     runs-on: ubuntu-latest
 
@@ -26,12 +28,15 @@ jobs:
           go-version: '1.21.5'
 
       - name: Run scripts/generate-dotnet.sh
-        run: scripts/generate-dotnet.sh
+        run: scripts/generate-dotnet.sh ${{ matrix.platform }}
 
       - name: Clone the existing dotnet-sdk
         run: |
           cd ../
           git clone https://github.com/octokit/dotnet-sdk.git
+
+      # TODO(kfcampbell): translation step to turn platform name --> repo name
+      # also need to create repo
 
       - name: Copy generated code to dotnet-sdk
         run: cp -rf stage/dotnet/dotnet-sdk/* ../dotnet-sdk/
