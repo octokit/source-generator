@@ -27,19 +27,27 @@ jobs:
         with:
           go-version: '1.21.5'
 
+      - name: Set repository name from platform for later use
+        run: |
+          if [ "${{ matrix.platform }}" == "dotcom" ]; then
+            echo "REPO_NAME=go-sdk" >> $GITHUB_ENV
+          else
+            echo "REPO_NAME=go-sdk-enterprise-cloud" >> $GITHUB_ENV
+          fi
+
+          echo "Repository name is $REPO_NAME based off of ${{ matrix.platform }}"
+
       - name: Run scripts/generate-go.sh
         run: scripts/generate-go.sh ${{ matrix.platform }}
 
-      - name: Clone the existing go-sdk
+      - name: Clone the existing repository
         run: |
           cd ../
-          git clone https://github.com/octokit/go-sdk.git
+          git clone https://github.com/octokit/$REPO_NAME.git
 
-      # TODO(kfcampbell): translation step to turn platform name --> repo name
-      # also need to create repo
-
-      - name: Copy generated code to go-sdk
-        run: cp -rf stage/go/go-sdk/* ../go-sdk/
+      - name: Copy generated code to downstream repository
+        run: |
+          cp -rf stage/go/$REPO_NAME/* ../$REPO_NAME/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
@@ -48,10 +56,10 @@ jobs:
         with:
           title: "Changes in generated code"
           body: >
-            "The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
-            commit message, merge, and tag a release as appropriate."
+            The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate.
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
-          repository: "octokit/go-sdk"
-          path-to-cd-to: "../go-sdk"
+          repository: "octokit/$REPO_NAME"
+          path-to-cd-to: "../$REPO_NAME"

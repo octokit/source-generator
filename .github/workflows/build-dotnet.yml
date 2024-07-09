@@ -27,19 +27,26 @@ jobs:
         with:
           go-version: '1.21.5'
 
+      - name: Set repository name from platform for later use
+        run: |
+          if [ "${{ matrix.platform }}" == "dotcom" ]; then
+            echo "REPO_NAME=dotnet-sdk" >> $GITHUB_ENV
+          else
+            echo "REPO_NAME=dotnet-sdk-enterprise-cloud" >> $GITHUB_ENV
+          fi
+
+          echo "Repository name is $REPO_NAME based off of ${{ matrix.platform }}"
+
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
 
-      - name: Clone the existing dotnet-sdk
+      - name: Clone the existing repository
         run: |
           cd ../
-          git clone https://github.com/octokit/dotnet-sdk.git
-
-      # TODO(kfcampbell): translation step to turn platform name --> repo name
-      # also need to create repo
+          git clone https://github.com/octokit/$REPO_NAME.git
 
       - name: Copy generated code to dotnet-sdk
-        run: cp -rf stage/dotnet/dotnet-sdk/* ../dotnet-sdk/
+        run: cp -rf stage/dotnet/$REPO_NAME/* ../$REPO_NAME/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
@@ -53,5 +60,5 @@ jobs:
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
-          repository: "octokit/dotnet-sdk"
-          path-to-cd-to: "../dotnet-sdk"
+          repository: "octokit/$REPO_NAME"
+          path-to-cd-to: "../$REPO_NAME"
