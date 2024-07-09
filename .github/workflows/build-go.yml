@@ -35,8 +35,6 @@ jobs:
             echo "REPO_NAME=go-sdk-enterprise-cloud" >> $GITHUB_ENV
           fi
 
-          echo "Repository name is $REPO_NAME based off of ${{ matrix.platform }}"
-
       - name: Run scripts/generate-go.sh
         run: scripts/generate-go.sh ${{ matrix.platform }}
 
