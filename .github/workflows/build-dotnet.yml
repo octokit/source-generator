@@ -35,8 +35,6 @@ jobs:
             echo "REPO_NAME=dotnet-sdk-enterprise-cloud" >> $GITHUB_ENV
           fi
 
-          echo "Repository name is $REPO_NAME based off of ${{ matrix.platform }}"
-
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
 
