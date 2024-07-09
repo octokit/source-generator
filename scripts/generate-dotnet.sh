@@ -1,14 +1,58 @@
 #!/bin/sh
 
+set -ex
+
+# TODO(kfcampbell): reduce duplication between this script and scripts/generate-go.sh
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: $0 <platform> [version]"
+    echo "platform: must be one of 'ghes', 'ghec', or 'dotcom'"
+    echo "version: a currently supported version of GitHub Enterprise Server, required only for 'ghes' and omitted otherwise"
+    exit 1
+fi
+
+PLATFORM=$1
+VERSION=${2:-""} # version defaults to an empty string if not provided
+
+if [ "$PLATFORM" != "ghes" ] && [ "$PLATFORM" != "ghec" ] && [ "$PLATFORM" != "dotcom" ]; then
+    echo "Invalid platform: must be one of 'ghes', 'ghec', or 'dotcom'."
+    exit 1
+fi
+
+if [ "$PLATFORM" = "ghes" ]; then
+	# Note that this logic only validates that the version is a positive number
+    if [ "$VERSION" = "" ] || ! echo "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+)*$'; then
+        echo "Invalid version for 'ghes': must be a currently supported version of GitHub Enterprise Server."
+        exit 1
+    fi
+else
+    if [ "$VERSION" != "" ]; then
+        echo "Invalid version. Must be an empty string for platforms other than 'ghes'."
+        exit 1
+    fi
+fi
+
+SCHEMA_FILE="schemas/api.github.com.json"
+if [ "$PLATFORM" != "dotcom" ]; then
+    if [ "$VERSION" != "" ]; then
+        SCHEMA_FILE="schemas/$PLATFORM.$VERSION.json"
+    else
+        SCHEMA_FILE="schemas/$PLATFORM.json"
+    fi
+fi
+
 ./scripts/install-tools.sh
 
-go run schemas/main.go --schema-next=false
+if [ "$PLATFORM" = "ghec" ]; then
+	NAMESPACE="dotnet-sdk-enterprise-cloud"
+elif [ "$PLATFORM" = "ghes" ]; then
+	NAMESPACE="dotnet-sdk-enterprise-server"
+else
+	NAMESPACE="dotnet-sdk"
+fi
 
-# Execute generation
-kiota generate -l csharp --ll trace -o $(pwd)/stage/dotnet/dotnet-sdk/src/GitHub -c GitHubClient -n GitHub -d schemas/api.github.com.json --ebc
-
-# Build and run post-processor
+go run schemas/main.go --schema-next=false --platform=$PLATFORM --version=$VERSION
+kiota generate -l csharp --ll trace -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub -c GitHubClient -n GitHub -d $SCHEMA_FILE --ebc
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go
-post-processors/csharp/post-processor $(pwd)/stage/dotnet/dotnet-sdk/src/GitHub
-cd stage/dotnet/dotnet-sdk
+post-processors/csharp/post-processor $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
+cd stage/dotnet/$NAMESPACE
 dotnet build
