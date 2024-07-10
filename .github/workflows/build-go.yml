@@ -60,5 +60,5 @@ jobs:
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
-          repository: "octokit/$REPO_NAME"
-          path-to-cd-to: "../$REPO_NAME"
+          repository: "octokit/${{ env.REPO_NAME }}"
+          path-to-cd-to: "../${{ env.REPO_NAME }}"
