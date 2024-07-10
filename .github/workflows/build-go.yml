@@ -51,6 +51,7 @@ jobs:
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+          REPO_NAME: ${{ env.REPO_NAME }}
         with:
           title: "Changes in generated code"
           body: >
@@ -59,5 +60,5 @@ jobs:
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
-          repository: "octokit/$REPO_NAME"
-          path-to-cd-to: "../$REPO_NAME"
+          repository: "octokit/${{ env.REPO_NAME }}"
+          path-to-cd-to: "../${{ env.REPO_NAME }}"
