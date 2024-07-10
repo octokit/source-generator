@@ -51,6 +51,7 @@ jobs:
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+          REPO_NAME: ${{ env.REPO_NAME }}
         with:
           title: "Changes in generated code"
           body: >
