@@ -57,7 +57,7 @@ jobs:
           body: >
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
-          branch: "generated-code-update"
+          branch: "generated-code-update-${{ matrix.platform }}"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
           repository: "octokit/${{ env.REPO_NAME }}"
@@ -110,7 +110,7 @@ jobs:
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
           base-branch: ${{ matrix.version }}
-          branch: "generated-code-update"
+          branch: "generated-code-update-${{ matrix.version }}"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
           repository: "octokit/go-sdk-enterprise-server"
