@@ -107,6 +107,7 @@ jobs:
           body: >
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
+          base-branch: ${{ matrix.version }}
           branch: "generated-code-update"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
