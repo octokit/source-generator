@@ -88,11 +88,13 @@ jobs:
         run: |
           cd ../
           git clone https://github.com/octokit/go-sdk-enterprise-server.git
+          cd go-sdk-enterprise-server
           if git show-ref --verify --quiet refs/heads/${{ matrix.version }}; then
             git switch ${{ matrix.version }}
           else
             git switch -c ${{ matrix.version }}
           fi
+          cd ../
 
       - name: Copy generated code to downstream repository
         run: |
