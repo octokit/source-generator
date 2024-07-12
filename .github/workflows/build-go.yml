@@ -62,6 +62,7 @@ jobs:
           commit-message: "New updates to generated code"
           repository: "octokit/${{ env.REPO_NAME }}"
           path-to-cd-to: "../${{ env.REPO_NAME }}"
+
   server-builds:
     strategy:
       matrix:
@@ -105,7 +106,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
         with:
-          title: "Changes in generated code"
+          title: "GHES ${{ matrix.version}}: Changes in generated code"
           body: >
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
