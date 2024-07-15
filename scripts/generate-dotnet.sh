@@ -46,6 +46,13 @@ if [ "$PLATFORM" = "ghec" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-cloud"
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
+    CSPROJ_PACKAGE_FILE="$(pwd)/stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
+    if [[ -f "$CSPROJ_PACKAGE_FILE" ]]; then
+        sed -i '' "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
+        echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
+    else
+        echo "File $CSPROJ_PACKAGE_FILE does not exist."
+    fi   
 else
 	NAMESPACE="dotnet-sdk"
 fi
@@ -55,16 +62,5 @@ kiota generate -l csharp --ll trace -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go
 post-processors/csharp/post-processor $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 cd stage/dotnet/$NAMESPACE
-
-if [ "$PLATFORM" = "ghes" ]; then
-	NAMESPACE="dotnet-sdk-enterprise-server"
-    CSPROJ_PACKAGE_FILE="src/GitHub.Octokit.GHES.SDK.csproj"
-    if [[ -f "$CSPROJ_PACKAGE_FILE" ]]; then
-        sed -i '' "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.3.12</PackageId>|" "$CSPROJ_PACKAGE_FILE"
-        echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
-    else
-        echo "File $CSPROJ_PACKAGE_FILE does not exist."
-    fi   
-fi
 
 dotnet build
