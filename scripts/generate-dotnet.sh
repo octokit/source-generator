@@ -34,7 +34,7 @@ fi
 SCHEMA_FILE="schemas/api.github.com.json"
 if [ "$PLATFORM" != "dotcom" ]; then
     if [ "$VERSION" != "" ]; then
-        SCHEMA_FILE="schemas/$PLATFORM.$VERSION.json"
+        SCHEMA_FILE="schemas/$PLATFORM-$VERSION.json"
     else
         SCHEMA_FILE="schemas/$PLATFORM.json"
     fi
