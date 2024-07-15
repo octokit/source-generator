@@ -57,8 +57,62 @@ jobs:
           body: >
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
-          branch: "generated-code-update"
+          branch: "generated-code-update-${{ matrix.platform }}"
           author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
           repository: "octokit/${{ env.REPO_NAME }}"
           path-to-cd-to: "../${{ env.REPO_NAME }}"
+
+  server-builds:
+    strategy:
+      matrix:
+        version: ["3.10", "3.11", "3.12", "3.13"] # versions must be quoted or 3.10 becomes 3.1
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
+
+      - uses: actions/setup-go@v3.5.0
+        with:
+          go-version: '1.21.5'
+
+      - name: Run scripts/generate-go.sh
+        run: scripts/generate-go.sh ghes ${{ matrix.version }}
+
+      - name: Clone the existing repository and check out appropriate branch (create it if it doesn't exist)
+        run: |
+          cd ../
+          git clone https://github.com/octokit/go-sdk-enterprise-server.git
+          cd go-sdk-enterprise-server
+          if git show-ref --verify --quiet refs/heads/${{ matrix.version }}; then
+            git switch ${{ matrix.version }}
+          else
+            git switch -c ${{ matrix.version }}
+          fi
+          cd ../
+
+      - name: Copy generated code to downstream repository
+        run: |
+          cp -rf stage/go/go-sdk-enterprise-server/* ../go-sdk-enterprise-server/
+
+      - uses: gr2m/create-or-update-pull-request-action@cd-path
+        if: github.event_name != 'pull_request' # do not update the SDK on PR builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+        with:
+          title: "GHES ${{ matrix.version}}: Changes in generated code"
+          body: >
+            The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
+            commit message, merge, and tag a release as appropriate.
+          base-branch: ${{ matrix.version }}
+          branch: "generated-code-update-${{ matrix.version }}"
+          author: "Octokit Bot <octokitbot@martynus.net>"
+          commit-message: "New updates to generated code"
+          repository: "octokit/go-sdk-enterprise-server"
+          path-to-cd-to: "../go-sdk-enterprise-server"
