@@ -47,12 +47,8 @@ if [ "$PLATFORM" = "ghec" ]; then
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
     CSPROJ_PACKAGE_FILE="$(pwd)/stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
-    if [[ -f "$CSPROJ_PACKAGE_FILE" ]]; then
-        sed -i '' "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
-        echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
-    else
-        echo "File $CSPROJ_PACKAGE_FILE does not exist."
-    fi   
+    sed -i '' "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
+    echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
 else
 	NAMESPACE="dotnet-sdk"
 fi
