@@ -49,7 +49,7 @@ if [ "$PLATFORM" = "ghec" ]; then
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
     CSPROJ_PACKAGE_FILE="stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
-    sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$version</PackageId>|" "$CSPROJ_PACKAGE_FILE"
+    sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
     echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
 else
 	NAMESPACE="dotnet-sdk"
