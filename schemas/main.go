@@ -87,6 +87,8 @@ func realMain() error {
 	}
 
 	log.Printf(logMsg)
+	log.Printf("Package url: %s", url)
+
 	resp, err := http.Get(url)
 
 	if err != nil {

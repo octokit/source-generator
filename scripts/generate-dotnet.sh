@@ -34,7 +34,7 @@ fi
 SCHEMA_FILE="schemas/api.github.com.json"
 if [ "$PLATFORM" != "dotcom" ]; then
     if [ "$VERSION" != "" ]; then
-        SCHEMA_FILE="schemas/$PLATFORM.$VERSION.json"
+        SCHEMA_FILE="schemas/$PLATFORM-$VERSION.json"
     else
         SCHEMA_FILE="schemas/$PLATFORM.json"
     fi
@@ -42,10 +42,15 @@ fi
 
 ./scripts/install-tools.sh
 
+
+
 if [ "$PLATFORM" = "ghec" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-cloud"
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
+    CSPROJ_PACKAGE_FILE="stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
+    sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
+    echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
 else
 	NAMESPACE="dotnet-sdk"
 fi
@@ -55,4 +60,5 @@ kiota generate -l csharp --ll trace -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go
 post-processors/csharp/post-processor $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 cd stage/dotnet/$NAMESPACE
+
 dotnet build
