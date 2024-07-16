@@ -42,8 +42,6 @@ fi
 
 ./scripts/install-tools.sh
 
-
-
 if [ "$PLATFORM" = "ghec" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-cloud"
 elif [ "$PLATFORM" = "ghes" ]; then
@@ -61,4 +59,7 @@ go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/
 post-processors/csharp/post-processor $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 cd stage/dotnet/$NAMESPACE
 
+# Validate that the generated code compiles
 dotnet build
+
+

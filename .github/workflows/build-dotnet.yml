@@ -37,7 +37,10 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
-
+      
+      - name: Clean up build artifacts before syncing
+        run: dotnet clean stage/dotnet/$REPO_NAME/GitHub.Octokit.sln
+        
       - name: Clone the existing repository
         run: |
           cd ../
@@ -83,6 +86,9 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ghes ${{ matrix.version }}
+      
+      - name: Clean up build artifacts before syncing
+        run: dotnet clean stage/dotnet/dotnet-sdk-enterprise-server/GitHub.Octokit.sln
 
       - name: Clone the existing repository and check out appropriate branch (create it if it doesn't exist)
         run: |
