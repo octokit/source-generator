@@ -48,7 +48,7 @@ jobs:
 
       - name: Copy generated code to dotnet-sdk
         run: | 
-          run: cp -rf stage/dotnet/$REPO_NAME/. ../$REPO_NAME/
+          rsync -av --delete stage/dotnet/$REPO_NAME/ $REPO_NAME/
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
