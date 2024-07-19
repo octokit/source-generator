@@ -50,7 +50,6 @@ jobs:
         run: | 
           cp -rf stage/dotnet/$REPO_NAME/. ../$REPO_NAME/ # copy everything
           rsync -av --delete stage/dotnet/$REPO_NAME/src/ ../$REPO_NAME/src/ # delete files that are not generated
-          # ls $REPO_NAME
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
@@ -107,7 +106,8 @@ jobs:
 
       - name: Copy generated code to downstream repository
         run: |
-          cp -rf stage/dotnet/dotnet-sdk-enterprise-server/. ../dotnet-sdk-enterprise-server/
+          cp -rf stage/dotnet/dotnet-sdk-enterprise-server/. ../dotnet-sdk-enterprise-server/ # copy everything
+          rsync -av --delete stage/dotnet/dotnet-sdk-enterprise-server/src/ ../dotnet-sdk-enterprise-server/src/ # delete files that are not generated
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
