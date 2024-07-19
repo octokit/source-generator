@@ -46,7 +46,7 @@ jobs:
       - name: Copy generated code to downstream repository
         run: |
           cp -rf stage/go/$REPO_NAME/. ../$REPO_NAME/ #copy everything
-          rsync -av --delete stage/go/$REPO_NAME/src/ ../$REPO_NAME/src/ # delete files that are not generated
+          rsync -av --delete stage/go/$REPO_NAME/pkg/ ../$REPO_NAME/pkg/ # delete files that are not generated
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
@@ -101,7 +101,7 @@ jobs:
       - name: Copy generated code to downstream repository
         run: |
           cp -rf stage/go/go-sdk-enterprise-server/. ../go-sdk-enterprise-server/ # copy everything
-          rsync -av --delete stage/go/go-sdk-enterprise-server/src/ ../go-sdk-enterprise-server/src/ # delete files that are not generated
+          rsync -av --delete stage/go/go-sdk-enterprise-server/pkg/ ../go-sdk-enterprise-server/pkg/ # delete files that are not generated
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
