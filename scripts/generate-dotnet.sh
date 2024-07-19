@@ -62,4 +62,3 @@ cd stage/dotnet/$NAMESPACE
 # Validate that the generated code compiles
 dotnet build
 
-
