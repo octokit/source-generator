@@ -37,14 +37,19 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
-
+      
+      - name: Clean up build artifacts before syncing
+        run: dotnet clean stage/dotnet/$REPO_NAME/GitHub.Octokit.sln
+        
       - name: Clone the existing repository
         run: |
           cd ../
           git clone https://github.com/octokit/$REPO_NAME.git
 
       - name: Copy generated code to dotnet-sdk
-        run: cp -rf stage/dotnet/$REPO_NAME/* ../$REPO_NAME/
+        run: | 
+          cp -rf stage/dotnet/$REPO_NAME/. ../$REPO_NAME/ # copy everything
+          rsync -av --delete stage/dotnet/$REPO_NAME/src/ ../$REPO_NAME/src/ # delete files that are not generated
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
@@ -83,6 +88,9 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ghes ${{ matrix.version }}
+      
+      - name: Clean up build artifacts before syncing
+        run: dotnet clean stage/dotnet/dotnet-sdk-enterprise-server/GitHub.Octokit.sln
 
       - name: Clone the existing repository and check out appropriate branch (create it if it doesn't exist)
         run: |
@@ -98,7 +106,8 @@ jobs:
 
       - name: Copy generated code to downstream repository
         run: |
-          cp -rf stage/dotnet/dotnet-sdk-enterprise-server/* ../dotnet-sdk-enterprise-server/
+          cp -rf stage/dotnet/dotnet-sdk-enterprise-server/. ../dotnet-sdk-enterprise-server/ # copy everything
+          rsync -av --delete stage/dotnet/dotnet-sdk-enterprise-server/src/ ../dotnet-sdk-enterprise-server/src/ # delete files that are not generated
 
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds

@@ -42,8 +42,6 @@ fi
 
 ./scripts/install-tools.sh
 
-
-
 if [ "$PLATFORM" = "ghec" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-cloud"
 elif [ "$PLATFORM" = "ghes" ]; then
@@ -56,9 +54,11 @@ else
 fi
 
 go run schemas/main.go --schema-next=false --platform=$PLATFORM --version=$VERSION
-kiota generate -l csharp --ll trace -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub -c GitHubClient -n GitHub -d $SCHEMA_FILE --ebc
+kiota generate -l csharp --ll Information -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub -c GitHubClient -n GitHub -d $SCHEMA_FILE --ebc
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go
 post-processors/csharp/post-processor $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub
 cd stage/dotnet/$NAMESPACE
 
+# Validate that the generated code compiles
 dotnet build
+
