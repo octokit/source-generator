@@ -54,7 +54,7 @@ jobs:
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
-          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_SDK_PAT }}
           REPO_NAME: ${{ env.REPO_NAME }}
         with:
           title: "Changes in generated code"
@@ -62,7 +62,7 @@ jobs:
             The latest OpenAPI spec resulted in changes to the generated code. Please review, set an applicable
             commit message, merge, and tag a release as appropriate.
           branch: "generated-code-update"
-          author: "Octokit Bot <octokitbot@martynus.net>"
+          author: "Octokit Bot <security+octokitbot@github.com>"
           commit-message: "New updates to generated code"
           repository: "octokit/${{ env.REPO_NAME }}"
           path-to-cd-to: "../${{ env.REPO_NAME }}"
@@ -112,7 +112,7 @@ jobs:
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
-          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_SDK_PAT }}
         with:
           title: "GHES ${{ matrix.version}}: Changes in generated code"
           body: >
@@ -120,7 +120,7 @@ jobs:
             commit message, merge, and tag a release as appropriate.
           base-branch: ${{ matrix.version }}
           branch: "generated-code-update-${{ matrix.version }}"
-          author: "Octokit Bot <octokitbot@martynus.net>"
+          author: "Octokit Bot <security+octokitbot@github.com>"
           commit-message: "New updates to generated code"
           repository: "octokit/dotnet-sdk-enterprise-server"
           path-to-cd-to: "../dotnet-sdk-enterprise-server"
