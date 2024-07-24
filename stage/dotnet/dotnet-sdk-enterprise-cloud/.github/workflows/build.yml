@@ -1,0 +1,32 @@
+name: "Build and test .NET SDK"
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
+
+      - name: Build the project
+        run: dotnet build src/GitHub.Octokit.GHEC.SDK.csproj
+
+      - name: Format
+        run: dotnet format --verify-no-changes
+
+      - name: Test SDK
+        run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover -p:ExcludeByFile="**/GitHub/**/*.cs"
+
+      - name: Build and strong name sign
+        run: dotnet build src/GitHub.Octokit.GHEC.SDK.csproj --no-incremental /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=../key.snk
