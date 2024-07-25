@@ -121,8 +121,8 @@ jobs:
             commit message, merge, and tag a release as appropriate.
           base-branch: ${{ matrix.version }}
           branch: "generated-code-update-${{ matrix.version }}"
-          author: "Octokit Bot <security+octokitbot@github.com>"
-          # author: "Octokit Bot <octokitbot@martynus.net>"
+          # author: "Octokit Bot <security+octokitbot@github.com>"
+          author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
           repository: "octokit/dotnet-sdk-enterprise-server"
           path-to-cd-to: "../dotnet-sdk-enterprise-server"
