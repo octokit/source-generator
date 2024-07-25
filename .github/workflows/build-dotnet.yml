@@ -37,17 +37,17 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
-      
+
       - name: Clean up build artifacts before syncing
         run: dotnet clean stage/dotnet/$REPO_NAME/GitHub.Octokit.sln
-        
+
       - name: Clone the existing repository
         run: |
           cd ../
           git clone https://github.com/octokit/$REPO_NAME.git
 
       - name: Copy generated code to dotnet-sdk
-        run: | 
+        run: |
           cp -rf stage/dotnet/$REPO_NAME/. ../$REPO_NAME/ # copy everything
           rsync -av --delete stage/dotnet/$REPO_NAME/src/ ../$REPO_NAME/src/ # delete files that are not generated
 
@@ -88,7 +88,7 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ghes ${{ matrix.version }}
-      
+
       - name: Clean up build artifacts before syncing
         run: dotnet clean stage/dotnet/dotnet-sdk-enterprise-server/GitHub.Octokit.sln
 
@@ -112,7 +112,8 @@ jobs:
       - uses: gr2m/create-or-update-pull-request-action@cd-path
         if: github.event_name != 'pull_request' # do not update the SDK on PR builds
         env:
-          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_SDK_PAT }}
+          # GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_SDK_PAT }}
+          GITHUB_TOKEN: ${{ secrets.OCTOKITBOT_PAT }}
         with:
           title: "GHES ${{ matrix.version}}: Changes in generated code"
           body: >
@@ -121,6 +122,7 @@ jobs:
           base-branch: ${{ matrix.version }}
           branch: "generated-code-update-${{ matrix.version }}"
           author: "Octokit Bot <security+octokitbot@github.com>"
+          # author: "Octokit Bot <octokitbot@martynus.net>"
           commit-message: "New updates to generated code"
           repository: "octokit/dotnet-sdk-enterprise-server"
           path-to-cd-to: "../dotnet-sdk-enterprise-server"
