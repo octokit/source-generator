@@ -97,11 +97,13 @@ jobs:
           cd ../
           git clone https://github.com/octokit/dotnet-sdk-enterprise-server.git
           cd dotnet-sdk-enterprise-server
-          if git show-ref --verify --quiet refs/heads/${{ matrix.version }}; then
-            echo "Branch ${{ matrix.version }} already exists; skipping creation"
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/${{ matrix.version }}; then
+            git switch -c ${{ matrix.version }} --track origin/${{ matrix.version }}
+            echo "Branch ${{ matrix.version }} already exists; skipping creation and fetching from remote"
           else
             git switch -c ${{ matrix.version }}
-            echo "Branch ${{ matrix.version }} created"
+            echo "Branch ${{ matrix.version }} does not exist on remote; created locally"
             git switch -
           fi
           cd ../
