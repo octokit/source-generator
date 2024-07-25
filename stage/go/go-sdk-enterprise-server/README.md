@@ -1,6 +1,32 @@
 # github.com/octokit/go-sdk-enterprise-server
 
-An "alpha" version of a generated Go SDK from [GitHub's OpenAPI spec](https://github.com/github/rest-api-description), built on [Kiota](https://github.com/microsoft/kiota).
+An "alpha" version of a generated Go SDK for GitHub's Enterprise Server products, generated from [GitHub's OpenAPI spec](https://github.com/github/rest-api-description), built on [Kiota](https://github.com/microsoft/kiota).
+
+You may also want:
+
+- Go
+	- For the standard GitHub.com product
+		- [go-sdk repository](https://github.com/octokit/go-sdk)
+		- [pkg.go.dev docs link](https://pkg.go.dev/github.com/octokit/go-sdk)
+	- For GitHub Enterprise Cloud
+		- [go-sdk-enterprise-cloud repository](https://github.com/octokit/go-sdk-enterprise-cloud)
+		- [pkg.go.dev docs link](https://pkg.go.dev/github.com/octokit/go-sdk-enterprise-cloud)
+	- For GitHub Enterprise Server
+		- [go-sdk-enterprise-server repository](https://github.com/octokit/go-sdk-enterprise-server)
+		- [pkg.go.dev docs link](https://pkg.go.dev/github.com/octokit/go-sdk-enterprise-server)
+- .NET
+	- For the standard GitHub.com product
+		- [dotnet-sdk repository](https://github.com/octokit/dotnet-sdk)
+		- [NuGet link](https://www.nuget.org/packages/GitHub.Octokit.SDK)
+	- For GitHub Enterprise Cloud
+		- [dotnet-sdk-enterprise-cloud repository](https://github.com/octokit/dotnet-sdk-enterprise-cloud)
+	- For GitHub Enterprise Server
+		- [dotnet-sdk-enterprise-server repository](https://github.com/octokit/dotnet-sdk-enterprise-server)
+	- For our classic non-generated, hand-maintained Octokit.net project
+		- [Octokit.net repository](https://github.com/octokit/octokit.net)
+		- For why we're building generative SDKs, see [Why a generated SDK?](#why-a-generated-sdk) below
+- [source-generator](https://github.com/octokit/source-generator) (the repository that creates these generated SDKs)
+	- Contributions to this repository should take place in source-generator instead, as they'll be distributed here through mechanisms there.
 
 ## How do I use it?
 
