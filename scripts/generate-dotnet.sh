@@ -47,11 +47,35 @@ if [ "$PLATFORM" = "ghec" ]; then
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
     CSPROJ_PACKAGE_FILE="stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
+    PUBLISH_YAML="stage/dotnet/$NAMESPACE/.github/workflows/publish.yml"
+
+    # Update the PackageId in the .csproj file to include the version
     sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
     echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
+
+    # Update the branches node in the publish.yml file to include the current version only
+    # This will set the branches node to an array containing only the new branch name, effectively replacing anything under the node.
+    awk -v branch="$VERSION" '
+    BEGIN { inside_branches = 0 }
+    /^branches:/ {
+        print
+        print "  - " branch
+        inside_branches = 1
+        next
+    }
+    inside_branches && /^ *- / {
+        next
+    }
+    { 
+        inside_branches = 0
+        print 
+    }
+    ' "$PUBLISH_YAML" > tmp.yaml && mv tmp.yaml "$PUBLISH_YAML"
 else
 	NAMESPACE="dotnet-sdk"
 fi
+
+
 
 go run schemas/main.go --schema-next=false --platform=$PLATFORM --version=$VERSION
 kiota generate -l csharp --ll Information -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub -c GitHubClient -n GitHub -d $SCHEMA_FILE --ebc
