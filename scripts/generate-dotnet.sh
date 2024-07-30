@@ -61,8 +61,6 @@ else
 	NAMESPACE="dotnet-sdk"
 fi
 
-
-
 go run schemas/main.go --schema-next=false --platform=$PLATFORM --version=$VERSION
 kiota generate -l csharp --ll Information -o $(pwd)/stage/dotnet/$NAMESPACE/src/GitHub -c GitHubClient -n GitHub -d $SCHEMA_FILE --ebc
 go build -o $(pwd)/post-processors/csharp/post-processor post-processors/csharp/main.go
