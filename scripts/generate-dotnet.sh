@@ -53,8 +53,7 @@ elif [ "$PLATFORM" = "ghes" ]; then
     sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
     echo "Updated <PackageId> to GitHub.Octokit.GHES.SDK.$VERSION in $CSPROJ_PACKAGE_FILE"
 
-    # Update the branches node in the publish.yml file to include the current version only
-    # This will set the branches node to an array containing only the new branch name, effectively replacing anything under the node.
+    # Update the branches node in the build.yml file to include the current version only
     sed -i'' "s/- main/- $VERSION/" "$BUILD_YAML"
     echo "Branch replaced with version $VERSION in $BUILD_YAML."
 else
