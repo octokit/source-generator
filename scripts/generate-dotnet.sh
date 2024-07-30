@@ -55,7 +55,7 @@ elif [ "$PLATFORM" = "ghes" ]; then
 
     # Update the branches node in the publish.yml file to include the current version only
     # This will set the branches node to an array containing only the new branch name, effectively replacing anything under the node.
-    sed -i'' -e "s/- main/- $VERSION/" "$PUBLISH_YAML"
+    sed -i'' "s/- main/- $VERSION/" "$PUBLISH_YAML"
     echo "Branch replaced with version $VERSION in $PUBLISH_YAML."
 else
 	NAMESPACE="dotnet-sdk"
