@@ -45,6 +45,10 @@ if [ "$PLATFORM" = "ghec" ]; then
 	NAMESPACE="go-sdk-enterprise-cloud"
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="go-sdk-enterprise-server"
+    BUILD_YAML="stage/go/$NAMESPACE/.github/workflows/build.yml"
+    # Update the branches node in the build.yml file to include the current version only
+    sed -i'' "s/- main/- $VERSION/" "$BUILD_YAML"
+    echo "Branch replaced with version $VERSION in $BUILD_YAML."
 else
 	NAMESPACE="go-sdk"
 fi
