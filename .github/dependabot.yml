@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: 'nuget'
+    directories:
+      - 'stage/dotnet-sdk'
+      - 'stage/dotnet-sdk-enterprise-cloud'
+      - 'stage/dotnet-sdk-enterprise-server'
+    schedule:
+      interval: 'daily'
+    ignore:
+      - dependency-name: 'Microsoft.Kiota.*'
+  - package-ecosystem: 'gomod'
+    directories:
+      - 'stage/go-sdk'
+      - 'stage/go-sdk-enterprise-cloud'
+      - 'stage/go-sdk-enterprise-server'
+    schedule:
+      interval: 'daily'
+    ignore:
+      - dependency-name: 'github.com/microsoft/kiota*'
+  - package-ecosystem: 'github-actions'
+    directories:
+      - 'stage/dotnet-sdk'
+      - 'stage/dotnet-sdk-enterprise-cloud'
+      - 'stage/dotnet-sdk-enterprise-server'
+      - 'stage/go-sdk'
+      - 'stage/go-sdk-enterprise-cloud'
+      - 'stage/go-sdk-enterprise-server'
+    schedule:
+      interval: 'daily'
