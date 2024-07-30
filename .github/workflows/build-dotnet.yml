@@ -37,17 +37,17 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ${{ matrix.platform }}
-      
+
       - name: Clean up build artifacts before syncing
         run: dotnet clean stage/dotnet/$REPO_NAME/GitHub.Octokit.sln
-        
+
       - name: Clone the existing repository
         run: |
           cd ../
           git clone https://github.com/octokit/$REPO_NAME.git
 
       - name: Copy generated code to dotnet-sdk
-        run: | 
+        run: |
           cp -rf stage/dotnet/$REPO_NAME/. ../$REPO_NAME/ # copy everything
           rsync -av --delete stage/dotnet/$REPO_NAME/src/ ../$REPO_NAME/src/ # delete files that are not generated
 
@@ -88,7 +88,7 @@ jobs:
 
       - name: Run scripts/generate-dotnet.sh
         run: scripts/generate-dotnet.sh ghes ${{ matrix.version }}
-      
+
       - name: Clean up build artifacts before syncing
         run: dotnet clean stage/dotnet/dotnet-sdk-enterprise-server/GitHub.Octokit.sln
 
@@ -97,10 +97,14 @@ jobs:
           cd ../
           git clone https://github.com/octokit/dotnet-sdk-enterprise-server.git
           cd dotnet-sdk-enterprise-server
-          if git show-ref --verify --quiet refs/heads/${{ matrix.version }}; then
-            git switch ${{ matrix.version }}
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/${{ matrix.version }}; then
+            git switch -c ${{ matrix.version }} --track origin/${{ matrix.version }}
+            echo "Branch ${{ matrix.version }} already exists; skipping creation and fetching from remote"
           else
             git switch -c ${{ matrix.version }}
+            echo "Branch ${{ matrix.version }} does not exist on remote; created locally"
+            git switch -
           fi
           cd ../
 
