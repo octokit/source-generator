@@ -47,7 +47,7 @@ if [ "$PLATFORM" = "ghec" ]; then
 elif [ "$PLATFORM" = "ghes" ]; then
 	NAMESPACE="dotnet-sdk-enterprise-server"
     CSPROJ_PACKAGE_FILE="stage/dotnet/$NAMESPACE/src/GitHub.Octokit.GHES.SDK.csproj"
-    PUBLISH_YAML="stage/dotnet/$NAMESPACE/.github/workflows/publish.yml"
+    BUILD_YAML="stage/dotnet/$NAMESPACE/.github/workflows/build.yml"
 
     # Update the PackageId in the .csproj file to include the version
     sed -i "s|<PackageId>GitHub.Octokit.GHES.SDK</PackageId>|<PackageId>GitHub.Octokit.GHES.SDK.$VERSION</PackageId>|" "$CSPROJ_PACKAGE_FILE"
@@ -55,8 +55,8 @@ elif [ "$PLATFORM" = "ghes" ]; then
 
     # Update the branches node in the publish.yml file to include the current version only
     # This will set the branches node to an array containing only the new branch name, effectively replacing anything under the node.
-    sed -i'' "s/- main/- $VERSION/" "$PUBLISH_YAML"
-    echo "Branch replaced with version $VERSION in $PUBLISH_YAML."
+    sed -i'' "s/- main/- $VERSION/" "$BUILD_YAML"
+    echo "Branch replaced with version $VERSION in $BUILD_YAML."
 else
 	NAMESPACE="dotnet-sdk"
 fi
