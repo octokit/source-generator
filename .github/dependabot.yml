@@ -20,6 +20,7 @@ updates:
       - dependency-name: 'github.com/microsoft/kiota*'
   - package-ecosystem: 'github-actions'
     directories:
+      - '.github/workflows'
       - 'stage/dotnet-sdk'
       - 'stage/dotnet-sdk-enterprise-cloud'
       - 'stage/dotnet-sdk-enterprise-server'
