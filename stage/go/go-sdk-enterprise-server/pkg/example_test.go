@@ -88,6 +88,15 @@ func ExampleApiClient_Octocat_withoutConvenienceConstructor() {
 		log.Fatalf("Error creating request adapter: %v", err)
 	}
 
+	// TODO: Rework this test to fit the platform needs of GHES
+	baseUrl := adapter.GetBaseUrl()
+
+    // Note: This SDK should be used against a GitHub Enterprise instance, and the below URL is the public GitHub one. It's here only so that tests pass when running `go test ./...`, as the OpenAPI schema for GHES understandably does not include a baseURL.
+    // When setting up this package for your own usage, call `adapter.SetBaseUrl` or `pkg.WithBaseUrl` with your own GHES base URL.
+	if baseUrl == "" {
+		adapter.SetBaseUrl("https://api.github.com")
+	}
+
 	client := github.NewApiClient(adapter)
 
 	s := "Salutations"

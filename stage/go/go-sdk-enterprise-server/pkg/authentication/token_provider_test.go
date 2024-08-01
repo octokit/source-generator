@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	abstractions "github.com/microsoft/kiota-abstractions-go"
-	http "github.com/microsoft/kiota-http-go"
+	"github.com/octokit/go-sdk-enterprise-server/pkg"
 	"github.com/octokit/go-sdk-enterprise-server/pkg/authentication"
-	"github.com/octokit/go-sdk-enterprise-server/pkg/github"
 	"github.com/octokit/go-sdk-enterprise-server/pkg/github/user"
 	"github.com/octokit/go-sdk-enterprise-server/pkg/headers"
 )
@@ -155,18 +155,20 @@ func TestHappyPathIntegration(t *testing.T) {
 		t.Skip("in order to run integration tests, ensure a valid GITHUB_TOKEN exists in the environment")
 	}
 
-	provider := authentication.NewTokenProvider(
-		authentication.WithTokenAuthentication(token),
+	// TODO: Rework this test to fit the platform needs of GHES
+	client, err := pkg.NewApiClient(
+		pkg.WithUserAgent("octokit/go-sdk.example-functions"),
+		pkg.WithRequestTimeout(5*time.Second),
+		pkg.WithBaseUrl("https://api.github.com"),
+		pkg.WithTokenAuthentication(token),
 	)
 
-	adapter, err := http.NewNetHttpRequestAdapter(provider)
 	if err != nil {
-		log.Fatalf("Error creating request adapter: %v", err)
+		log.Fatalf("error creating client: %v", err)
 	}
+
 	headers := abstractions.NewRequestHeaders()
 	_ = headers.TryAdd("Accept", "application/vnd.github.v3+json")
-
-	client := github.NewApiClient(adapter)
 
 	// Create a new instance of abstractions.RequestConfiguration
 	requestConfig := &abstractions.RequestConfiguration[user.EmailsRequestBuilderGetQueryParameters]{
