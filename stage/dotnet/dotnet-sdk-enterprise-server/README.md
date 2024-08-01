@@ -40,6 +40,18 @@ To install the package, you can use either of the following options:
 - Type `Install-Package GitHub.Octokit.SDK` into the Package Manager Console, or
 - Type `dotnet add ./path/to/myproject.csproj package GitHub.Octokit.SDK` in a terminal (replace `./path/to/myproject.csproj` by the path to the _*.csproj_ file you want to add the dependency)
 
+
+### Initializing
+
+Given that the GHES platform is a self hosted instance when using this SDK you'll need to initialize it with your host and protocol:
+
+```
+	var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
+	var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider));
+	adapter.BaseAddress = new Uri("https://hosted.instance");
+	var gitHubClient = new GitHubClient(adapter);
+```
+
 ### Make your first request
 
 ```csharp

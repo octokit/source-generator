@@ -25,4 +25,20 @@ public static class RequestAdapter
 
         return gitHubRequestAdapter;
     }
+    public static HttpClientRequestAdapter Create(IAuthenticationProvider authenticationProvider, string baseUrl, HttpClient? clientFactory = null)
+    {
+        clientFactory ??= ClientFactory.Create();
+
+        var gitHubRequestAdapter =
+          new HttpClientRequestAdapter(
+            authenticationProvider,
+            null, // Node Parser
+            null, // Serializer
+            clientFactory,
+            null) {
+                BaseUrl = baseUrl
+            };
+            
+        return gitHubRequestAdapter;
+    }
 }
