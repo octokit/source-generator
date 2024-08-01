@@ -46,16 +46,28 @@ See example client instantiations and requests in [example_test.go](pkg/example_
 
 Given that the GHES platform is a self hosted instance when using this SDK you'll need to initialize it with your host and protocol:
 
-```
+```go
 client, err := pkg.NewApiClient(
-		pkg.WithUserAgent("octokit/go-sdk.example-functions"),
-		pkg.WithRequestTimeout(5*time.Second),
-		pkg.WithBaseUrl("https://hosted.instance"),
-		pkg.WithTokenAuthentication(token),
-	)
+	pkg.WithUserAgent("octokit/go-sdk.example-functions"),
+	pkg.WithRequestTimeout(5*time.Second),
+	pkg.WithBaseUrl("https://hosted.instance"),
+	pkg.WithTokenAuthentication(token),
+)
 ```
 
 or by using the `SetBaseUrl` function from the `kiotaHttp.NewNetHttpRequestAdapter` 
+
+```go
+tokenProvider := auth.NewTokenProvider(
+	auth.WithUserAgent("octokit/go-sdk.example-functions"),
+)
+adapter, err := kiotaHttp.NewNetHttpRequestAdapter(tokenProvider)
+if err != nil {
+	log.Fatalf("Error creating request adapter: %v", err)
+}
+adapter.SetBaseUrl("https://hosted.instance")
+client := github.NewApiClient(adapter)
+```
 
 ### Authentication
 

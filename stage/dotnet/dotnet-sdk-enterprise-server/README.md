@@ -45,9 +45,9 @@ To install the package, you can use either of the following options:
 
 Given that the GHES platform is a self hosted instance when using this SDK you'll need to initialize it with your host and protocol:
 
-```
+```csharp
         var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
-        var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), "https://api.github.com");
+        var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), "https://hosted.instance");
         var gitHubClient = new GitHubClient(adapter);
 ```
 
@@ -59,7 +59,7 @@ using GitHub.Octokit.Client;
 using GitHub.Octokit.Client.Authentication;
 
 var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
-var request = RequestAdapter.Create(new TokenAuthProvider(new TokenProvider(token)));
+var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), "https://hosted.instance");
 var gitHubClient = new GitHubClient(request);
 
 var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
