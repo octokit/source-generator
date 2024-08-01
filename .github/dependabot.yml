@@ -9,6 +9,14 @@ updates:
       interval: 'daily'
     ignore:
       - dependency-name: 'Microsoft.Kiota.*'
+    groups:
+      test:
+        patterns:
+          - 'xunit*'
+          - 'coverlet*'
+      microsoft:
+        patterns:
+          - 'Microsoft.*'
   - package-ecosystem: 'gomod'
     directories:
       - 'stage/go/go-sdk'
