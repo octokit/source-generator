@@ -42,6 +42,21 @@ See example client instantiations and requests in [example_test.go](pkg/example_
 	- Test coverage may be viewed in VS Code by running the command `Go: Toggle Test Coverage In Current Package`
 	- Alternately, you may run `go tool cover -html auth.cov -o auth.html` and open the generated `auth.html` file in a browser to view test coverage
 
+### Initializing
+
+Given that the GHES platform is a self hosted instance when using this SDK you'll need to initialize it with your host and protocol:
+
+```
+client, err := pkg.NewApiClient(
+		pkg.WithUserAgent("octokit/go-sdk.example-functions"),
+		pkg.WithRequestTimeout(5*time.Second),
+		pkg.WithBaseUrl("https://hosted.instance"),
+		pkg.WithTokenAuthentication(token),
+	)
+```
+
+or by using the `SetBaseUrl` function from the `kiotaHttp.NewNetHttpRequestAdapter` 
+
 ### Authentication
 
 This SDK supports [Personal Access Tokens (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic), [fine-grained Personal Access Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens), and [GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/about-authentication-with-a-github-app) authentication.
