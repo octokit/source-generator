@@ -29,11 +29,11 @@ updates:
   - package-ecosystem: 'github-actions'
     directories:
       - '.github/workflows'
-      - 'stage/dotnet/dotnet-sdk'
-      - 'stage/dotnet/dotnet-sdk-enterprise-cloud'
-      - 'stage/dotnet/dotnet-sdk-enterprise-server'
-      - 'stage/go/go-sdk'
-      - 'stage/go/go-sdk-enterprise-cloud'
-      - 'stage/go/go-sdk-enterprise-server'
+      - 'stage/dotnet/dotnet-sdk/.github/workflows'
+      - 'stage/dotnet/dotnet-sdk-enterprise-cloud/.github/workflows'
+      - 'stage/dotnet/dotnet-sdk-enterprise-server.github/workflows'
+      - 'stage/go/go-sdk/.github/workflows'
+      - 'stage/go/go-sdk-enterprise-cloud/.github/workflows'
+      - 'stage/go/go-sdk-enterprise-server/.github/workflows'
     schedule:
       interval: 'daily'
