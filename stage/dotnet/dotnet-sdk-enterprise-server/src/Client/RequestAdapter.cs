@@ -25,4 +25,25 @@ public static class RequestAdapter
 
         return gitHubRequestAdapter;
     }
+    public static HttpClientRequestAdapter Create(IAuthenticationProvider authenticationProvider, string baseUrl, HttpClient? clientFactory = null)
+    {
+        if (string.IsNullOrEmpty(baseUrl))
+        {
+            throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
+        }
+
+        clientFactory ??= ClientFactory.Create();
+
+        var gitHubRequestAdapter = new HttpClientRequestAdapter(
+            authenticationProvider,
+            null, // Node Parser
+            null, // Serializer
+            clientFactory,
+            null)
+        {
+            BaseUrl = baseUrl
+        };
+
+        return gitHubRequestAdapter;
+    }
 }
