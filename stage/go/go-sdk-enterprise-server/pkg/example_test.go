@@ -89,7 +89,6 @@ func ExampleApiClient_Octocat_withoutConvenienceConstructor() {
 	}
 
 	// TODO: Rework this test to fit the platform needs of GHES
-	// possibly add APIs the GHES SDK to provide base URL values to the formatter
 	baseUrl := adapter.GetBaseUrl()
 
     // Note: This SDK should be used against a GitHub Enterprise instance, and the below URL is the public GitHub one. It's here only so that tests pass when running `go test ./...`, as the OpenAPI schema for GHES understandably does not include a baseURL.
