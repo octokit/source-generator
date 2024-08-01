@@ -88,6 +88,14 @@ func ExampleApiClient_Octocat_withoutConvenienceConstructor() {
 		log.Fatalf("Error creating request adapter: %v", err)
 	}
 
+	// TODO: Rework this test to fit the platform needs of GHES
+	// possibly add APIs the GHES SDK to provide base URL values to the formatter
+	baseUrl := adapter.GetBaseUrl()
+
+	if baseUrl == "" {
+		adapter.SetBaseUrl("https://api.github.com")
+	}
+
 	client := github.NewApiClient(adapter)
 
 	s := "Salutations"
