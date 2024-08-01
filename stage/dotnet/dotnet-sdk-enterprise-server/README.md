@@ -60,7 +60,7 @@ using GitHub.Octokit.Client.Authentication;
 
 var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
 var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), "https://hosted.instance");
-var gitHubClient = new GitHubClient(request);
+var gitHubClient = new GitHubClient(adapter);
 
 var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
 
