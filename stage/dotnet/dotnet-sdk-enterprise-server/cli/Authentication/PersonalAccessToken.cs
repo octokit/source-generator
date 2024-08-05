@@ -18,7 +18,9 @@ public class PersonalAccessToken
     {
         // Personal Access Token authentication
         var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
-        var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), "https://api.github.com");
+        // The GitHub Enterprise Server URL
+        var baseUrl = Environment.GetEnvironmentVariable("GITHUB_BASE_URL") ?? "https://api.github.com";
+        var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), baseUrl);
         var gitHubClient = new GitHubClient(adapter);
 
         try

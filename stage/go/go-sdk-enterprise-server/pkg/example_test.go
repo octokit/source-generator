@@ -18,10 +18,16 @@ import (
 // ExampleApiClient_Octocat constructs an unauthenticated API client
 // and makes a simple API request.
 func ExampleApiClient_Octocat() {
+
+	baseURL := os.Getenv("GITHUB_BASE_URL")
+	if baseURL == "" {
+		baseURL = "https://api.github.com"
+	}
+
 	client, err := pkg.NewApiClient(
 		pkg.WithUserAgent("octokit/go-sdk.example-functions"),
 		pkg.WithRequestTimeout(5*time.Second),
-		pkg.WithBaseUrl("https://api.github.com"),
+		pkg.WithBaseUrl(baseURL),
 		pkg.WithTokenAuthentication(os.Getenv("GITHUB_TOKEN")),
 	)
 
@@ -91,12 +97,15 @@ func ExampleApiClient_Octocat_withoutConvenienceConstructor() {
 	// TODO: Rework this test to fit the platform needs of GHES
 	baseUrl := adapter.GetBaseUrl()
 
-    // Note: This SDK should be used against a GitHub Enterprise instance, and the below URL is the public GitHub one. It's here only so that tests pass when running `go test ./...`, as the OpenAPI schema for GHES understandably does not include a baseURL.
-    // When setting up this package for your own usage, call `adapter.SetBaseUrl` or `pkg.WithBaseUrl` with your own GHES base URL.
 	if baseUrl == "" {
-		adapter.SetBaseUrl("https://api.github.com")
+		// Note: This SDK should be used against a GitHub Enterprise instance, and the below URL is the public GitHub one. It's here only so that tests pass when running `go test ./...`, as the OpenAPI schema for GHES understandably does not include a baseURL.
+		// When setting up this package for your own usage, call `adapter.SetBaseUrl` or `pkg.WithBaseUrl` with your own GHES base URL.
+		baseURL := os.Getenv("GITHUB_BASE_URL")
+		if baseURL == "" {
+			baseURL = "https://api.github.com"
+		}
+		adapter.SetBaseUrl(baseURL)
 	}
-
 	client := github.NewApiClient(adapter)
 
 	s := "Salutations"

@@ -69,6 +69,8 @@ adapter.SetBaseUrl("https://hosted.instance")
 client := github.NewApiClient(adapter)
 ```
 
+Note: The examples in [the cmd/ directory in this repo](cmd/) use an enviromnent variable named `GITHUB_BASE_URL` if you'd prefer to set the base url of your hosted GitHub instance there while using the examples.
+
 ### Authentication
 
 This SDK supports [Personal Access Tokens (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic), [fine-grained Personal Access Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens), and [GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/about-authentication-with-a-github-app) authentication.
