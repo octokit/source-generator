@@ -18,10 +18,15 @@ func main() {
 		log.Fatalf("error parsing installation ID from string to int64: %v", err)
 	}
 
+	baseURL := os.Getenv("GITHUB_BASE_URL")
+	if baseURL == "" {
+		baseURL = "https://api.github.com"
+	}
+
 	client, err := pkg.NewApiClient(
 		pkg.WithUserAgent("my-user-agent"),
 		pkg.WithRequestTimeout(5*time.Second),
-		pkg.WithBaseUrl("https://api.github.com"),
+		pkg.WithBaseUrl(baseURL),
 		pkg.WithGitHubAppAuthentication(os.Getenv("PATH_TO_PEM_FILE"), os.Getenv("CLIENT_ID"), installationID),
 	)
 

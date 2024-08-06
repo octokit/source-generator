@@ -30,12 +30,16 @@ public class AppInstallationToken
 
     public static async Task Run()
     {
+        // The GitHub Enterprise Server URL
+        var baseUrl = Environment.GetEnvironmentVariable("GITHUB_BASE_URL") ?? "https://api.github.com";
+        
+
         var githubAppTokenProvider = new GitHubAppTokenProvider();
         var rsa = RSA.Create();
         rsa.ImportFromPem(PRIVATE_KEY_PATH);
 
         var aiAccessTokenProvider = new AppInstallationTokenProvider(CLIENT_ID, rsa, INSTALLATION_ID, githubAppTokenProvider);
-        var aiAdapter = RequestAdapter.Create(new AppInstallationAuthProvider(aiAccessTokenProvider));
+        var aiAdapter = RequestAdapter.Create(new AppInstallationAuthProvider(aiAccessTokenProvider), baseUrl);
         var aiGitHubClient = new GitHubClient(aiAdapter);
 
         try
