@@ -18,8 +18,13 @@ This repository generates code from [GitHub's OpenAPI specification](https://git
 		- [NuGet link](https://www.nuget.org/packages/GitHub.Octokit.SDK)
 	- For GitHub Enterprise Cloud
 		- [dotnet-sdk-enterprise-cloud repository](https://github.com/octokit/dotnet-sdk-enterprise-cloud)
+		- [NuGet link](https://www.nuget.org/packages/GitHub.Octokit.GHEC.SDK/)
 	- For GitHub Enterprise Server
 		- [dotnet-sdk-enterprise-server repository](https://github.com/octokit/dotnet-sdk-enterprise-server)
+		- [NuGet link](https://www.nuget.org/packages?q=GitHub.Octokit.GHES.SDK)
+	- For our classic non-generated, hand-maintained Octokit.net project
+		- [Octokit.net repository](https://github.com/octokit/octokit.net)
+		- [NuGet link](https://www.nuget.org/packages/Octokit/)
 
 ## Development
 
