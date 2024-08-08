@@ -25,3 +25,7 @@ post-processors/csharp/post-processor
 # revolver-related
 stage/go/*/pkg/github/*
 stage/dotnet/*/src/GitHub/*
+
+# Scripts infrastructure 
+.venv
+documentation
