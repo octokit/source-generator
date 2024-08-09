@@ -116,9 +116,9 @@ Authenticating as an App installation can be done using the `WithGitHubAppAuthen
 
 ## Why a generated SDK?
 
-We want to...
-1.  provide 100% coverage of the API in our SDK
-2.  use this as a building block for future SDK tooling.
+Octokit has been an integral part of GitHub’s ecosystem, offering a robust interface for interacting with GitHub’s APIs. However, as technology evolves, so should our tools. These SDKs are not just about generating code; they are about ushering in the next era of building and integrating with GitHub. By leveraging this generative approach, we will be able to provide immediate updates to models and APIs while also introducing new features to the SDK landscape.
+
+For more information, please take a moment and head over to the GitHub blog to read more about the [why's and how's behind our move to Generative SDKs](https://github.blog/news-insights/product-news/our-move-to-generated-sdks/).
 
 ## Why Go?
 
