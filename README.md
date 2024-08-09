@@ -43,3 +43,9 @@ Run `./scripts/generate-go.sh`. You may also run individual steps from the `.git
 ### C#
 
 Run `./scripts/generate-csharp.sh`
+
+## Design 
+
+For more information on our approach to generative SDKs please read our [design doc](./docs/DESIGN.md).  
+
+For more information on why we have made a move toward Generative SDKs, please take a moment and head over to the [GitHub blog](https://github.blog/news-insights/product-news/our-move-to-generated-sdks/) to read more there.
