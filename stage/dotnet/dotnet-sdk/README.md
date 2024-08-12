@@ -65,6 +65,27 @@ foreach (var pullRequest in pullRequests)
 }
 ```
 
+#### Specifying a Base URL
+
+```csharp
+using GitHub;
+using GitHub.Octokit.Client;
+using GitHub.Octokit.Client.Authentication;
+
+var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
+var request = new RequestAdapter(new TokenAuthProvider(new TokenProvider(token)))
+	.WithBaseUrl("https://api.github.com")
+    .Build();
+var gitHubClient = new GitHubClient(request);
+
+var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
+
+foreach (var pullRequest in pullRequests)
+{
+    Console.WriteLine($"#{pullRequest.Number} {pullRequest.Title}");
+}
+```
+
 ### Authentication
 
 This SDK supports [Personal Access Tokens (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic), [fine-grained Personal Access Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens), and [GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/about-authentication-with-a-github-app) authentication.
