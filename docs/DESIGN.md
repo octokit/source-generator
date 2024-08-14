@@ -68,9 +68,6 @@ _These changes represent any external resources or libraries used by the SDKs. I
 ### Goals
 
 1. Respect the language idioms
-    - x_y
-    - x-y
-    - x.y
 2. Stay away from abbreviations
 3. Use GitHub and community aware monikers and domain language 
     - SDK = Software Development Kit
