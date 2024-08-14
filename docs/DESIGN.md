@@ -52,7 +52,7 @@ _These changes represent the "core" aspects of each SDK.  These resources consis
 
 ![dependency changes flow](./resources/dependency-changes-flow.png)
 
-_These changes represent the any external resources or libraries used by the SDKs. In general, the intention is to keep the utilization of external libraries to a minimum to reduce deviations in the source across languanges; meaning one package in a certain lanaguage most likely doesn't exist in another language. This also helps the DX of SDK remain consistent across languages and platforms._
+_These changes represent any external resources or libraries used by the SDKs. In general, the intention is to keep the utilization of external libraries to a minimum to reduce deviations in the source across languanges. This also helps the developer experience of SDKs remain consistent across languages and platforms._
 
 ### Process flow for dependency updates to SDK client/core 
 1. Dependency is updated for a given language in the GENERATOR for core
