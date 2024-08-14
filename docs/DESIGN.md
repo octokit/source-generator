@@ -34,7 +34,7 @@ _These changes represent the product of code generated from [GitHub's OpenAPI](h
 ### Process flow for generation
 1. OpenAPI changes are detected from each API representation
 2. Generator creates the SDKs and ships them to their respective language repos (i.e. dotnet-sdk, go-sdk) and PRs against main
-3. Packages and/or tagged appropriately
+3. Packages are manually created and tagged appropriately
 
 ------
 
@@ -68,8 +68,7 @@ _These changes represent any external resources or libraries used by the SDKs. I
 ### Goals
 
 1. Respect the language idioms
-2. Stay away from abbreviations
-3. Use GitHub and community aware monikers and domain language 
+2. Use GitHub and community aware monikers and domain language 
     - SDK = Software Development Kit
     - GHES = GitHub Enterprise Server  
 
