@@ -57,7 +57,7 @@ _These changes represent any external resources or libraries used by the SDKs. I
 ### Process flow for dependency updates to SDK client/core 
 1. Dependency is updated for a given language in the GENERATOR for core
     1. Note: Dependencies for Generated code (i.e. Kiota) will get updated when generation happens
-2. A Dependency PR is created in each language/platform repo - this is done via [dependabot](../.github/dependabot.xml) for all workflows and source alike.
+2. A Dependency PR is created in each language/platform repo - this is done via [dependabot](../.github/dependabot.yml) for all workflows and source alike.
 3. All updates are shipped - tags created (no backport on dependencies unless critical / security issues)
     1. For one language this means that code is changed in the GENERATOR only.
     2. If backporting is necessary, a cherry pick in the SDK repos will be required.
