@@ -1,6 +1,4 @@
 // Copyright (c) GitHub 2023-2024 - Licensed as MIT.
-
-using GitHub.Repos.Item.Item.Pages.Builds;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 

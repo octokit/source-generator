@@ -18,7 +18,11 @@ public class PersonalAccessToken
     {
         // Personal Access Token authentication
         var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
-        var adapter = new RequestAdapter(new TokenAuthProvider(tokenProvider))
+        var clientFactory = new ClientFactory()
+            .WithUserAgent("my-app", "1.0.0")
+            .Build();
+
+        var adapter = new RequestAdapter(new TokenAuthProvider(tokenProvider), clientFactory)
             .WithBaseUrl("https://api.github.com")
             .Build();
 

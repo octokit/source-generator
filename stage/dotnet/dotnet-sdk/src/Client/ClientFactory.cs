@@ -9,8 +9,10 @@ namespace GitHub.Octokit.Client;
 /// <summary>
 /// Represents a client factory for creating <see cref="HttpClient"/>.
 /// </summary>
-public static class ClientFactory
+public class ClientFactory
 {
+    private readonly IList<DelegatingHandler> _handlerOptions = new List<DelegatingHandler>();
+
     private static readonly Lazy<List<DelegatingHandler>> s_handlers =
         new(() =>
         [
@@ -18,6 +20,17 @@ public static class ClientFactory
             new UserAgentHandler(),
             new RateLimitHandler(),
         ]);
+
+    public ClientFactory(HttpMessageHandler? finalHandler = null) {
+        var defaultHandlers = CreateDefaultHandlers();
+
+        var handler = ChainHandlersCollectionAndGetFirstLink(finalHandler: finalHandler ?? GetDefaultHttpMessageHandler(), handlers: [.. defaultHandlers]);
+        if (handler != null)
+        {
+            AddOrCreateHandler(handler);
+        }
+
+    }
 
     /// <summary>
     /// Creates an <see cref="HttpClient"/> instance with the specified <see cref="HttpMessageHandler"/>.
@@ -34,6 +47,26 @@ public static class ClientFactory
             handlers: [.. defaultHandlers]);
 
         return handler is not null ? new HttpClient(handler) : new HttpClient();
+    }
+
+    private void AddOrCreateHandler<THandler>(THandler handler) where THandler : DelegatingHandler
+    {
+        // Find the index of the handler that matches the specified type
+        int index = s_handlers.Value.FindIndex(h => h is THandler);
+        
+        if (index >= 0)
+        {
+            s_handlers.Value[index] = handler;
+        }
+        else
+        {
+            s_handlers.Value.Add(handler);
+        }
+    }
+
+    public ClientFactory WithUserAgent(string productName, string productVersion) {
+        AddOrCreateHandler(new UserAgentHandler(new Middleware.Options.UserAgentOptions{ProductName = productName, ProductVersion = productVersion}));
+        return this;
     }
 
     /// <summary>
@@ -97,4 +130,9 @@ public static class ClientFactory
     /// <returns>The default HTTP message handler.</returns>
     public static HttpMessageHandler GetDefaultHttpMessageHandler(IWebProxy? proxy = null) =>
         new HttpClientHandler { Proxy = proxy, AllowAutoRedirect = false };
+
+    public HttpClient Build()
+    {
+        return s_handlers is not null ? new HttpClient(s_handlers.Value.First()!) : new HttpClient();
+    }
 }
