@@ -50,7 +50,6 @@ func run() error {
 
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixPagesPaths(fileContents)
-		fileContents = fixKiotaTeamErrors(fileContents, path)
 		fileContents = fixKiotaUntypedNodeErrors(fileContents, path)
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
@@ -154,35 +153,6 @@ func fixPagesPaths(inputFile string) string {
 	// find: Path = PagesPostRequestBody_source_path.;
 	// replace: Path = PagesPostRequestBody_source_path.Root;
 	inputFile = strings.ReplaceAll(inputFile, "Path = PagesPostRequestBody_source_path.;", "Path = PagesPostRequestBody_source_path.Docs;")
-	return inputFile
-}
-
-func fixKiotaTeamErrors(inputFile string, filePath string) string {
-	if !strings.Contains(filePath, "Orgs/Item/Invitations/Item/Teams/TeamsRequestBuilder.cs") &&
-		!strings.Contains(filePath, "Orgs/Item/OrganizationRoles/Item/Teams/TeamsRequestBuilder.cs") &&
-		!strings.Contains(filePath, "Orgs/Item/Teams/Item/Teams/TeamsRequestBuilder.cs") &&
-		!strings.Contains(filePath, "Orgs/Item/Teams/TeamsRequestBuilder.cs") {
-		return inputFile
-	}
-
-	toReplace := "Task<List<Team>"
-	replaceWith := "Task<List<GitHub.Models.Team>"
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = "SendCollectionAsync<Team>"
-	replaceWith = "SendCollectionAsync<GitHub.Models.Team>"
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
-	toReplace = "Team.CreateFromDiscriminatorValue"
-	replaceWith = "GitHub.Models.Team.CreateFromDiscriminatorValue"
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-
 	return inputFile
 }
 
