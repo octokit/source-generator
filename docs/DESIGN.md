@@ -5,7 +5,7 @@ Our goal is to create automation for generative SDKs beginning with Go and .NET 
 
 ## Acceptance criteria
 
-Our design goals generated SDKs are...
+Generated SDKs should...
 - Abstract API implementations providing easy developer experience
 - Enable users to easily make use of recommended auth patterns 
 - Include client-side rate-limiting to make workflow execution more reliable
