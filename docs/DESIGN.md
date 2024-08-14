@@ -1,10 +1,6 @@
 # Overview
 
-Our goal is to create automation similar to what we have now for dotcom generative SDKs in Go and .NET, except for Enterprise Server and Proxima specifications.
-
-Currently, our go-sdk and dotnet-sdk do not provide support for GitHub Enterprise Server (GHES) or Proxima (dotcom stamp w/ GHEC API surface) in any of their versions. 
-
-We need to extend our SDK compatibility to include enterprise platform API surfaces. By doing so, we can enhance the capabilities we offer to our enterprise customers and strengthen the relationship between our revenue-generating customers and our SDK team.
+Our goal is to create automation for generative SDKs beginning with Go and .NET that encompass all of GitHub's product offerings: GitHub.com, Enterprise Server, and Enterprise Cloud specifications.
 
 
 ## Acceptance criteria
