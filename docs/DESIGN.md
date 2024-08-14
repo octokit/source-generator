@@ -33,7 +33,7 @@ Our design goals generated SDKs are...
 
 ![generated changes flow](./resources/generated-changes-flow.png)
 
-_These changes represent the product of code generated from [GitHUb's OpenAPI](https://github.com/github/rest-api-description) definitions via [Mirosoft Kiota](https://github.com/microsoft/kiota)._
+_These changes represent the product of code generated from [GitHub's OpenAPI](https://github.com/github/rest-api-description) definitions via [Mirosoft Kiota](https://github.com/microsoft/kiota)._
 
 ### Process flow for generation
 1. OpenAPI changes are detected from each API representation
