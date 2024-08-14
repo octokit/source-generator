@@ -40,7 +40,7 @@ _These changes represent the product of code generated from [GitHub's OpenAPI](h
 
 ![core changes flow](./resources/core-changes-flow.png)
 
-_These changes represent the "core" aspects of each SDK.  These resources consist of middleware, authentication, request and client factories, and other code that is not generated using kiota. Often, this source is handwritten once, coverted to the individual languages, and then propagated when generating the SDKs for a given GitHub platform._
+_These changes represent the "core" aspects of each SDK.  These resources consist of middleware, authentication, request and client factories, and other code that is not generated using Kiota. Often, this source is handwritten once, copied to the individual languages' and platforms' staging directories, and then propagated when generating the SDKs for a given GitHub platform._
 
 ### Process flow for changes/additions to SDK client/core
 1. Feature is added to all language versions of the SDK in the generator
