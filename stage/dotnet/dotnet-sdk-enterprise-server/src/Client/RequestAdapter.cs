@@ -30,7 +30,6 @@ public class RequestAdapter
 
         return gitHubRequestAdapter;
     }
-}
     public static HttpClientRequestAdapter Create(IAuthenticationProvider authenticationProvider, string baseUrl, HttpClient? clientFactory = null)
     {
         if (string.IsNullOrEmpty(baseUrl))
