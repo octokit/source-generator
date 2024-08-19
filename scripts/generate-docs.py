@@ -165,11 +165,8 @@ def generate_documentation(classes: List[dict], file_path: str, folder_name: str
             doc_content += f"**Example Usage:**\n"
             doc_content += (
                 f"```csharp\n"
-                f"using System;\n"
-                f"using System.Threading.Tasks;\n"
-                f"using Microsoft.Kiota.Abstractions;\n"
-                f"using Microsoft.Kiota.Http.HttpClientLibrary;\n"
-                f"using GitHub;\n\n"
+                f"using GitHub.Octokit.Client;\n"
+                f"using GitHub.Octokit.Client.Authentication;\n\n"
                 f"public class Example\n"
                 f"{{\n"
                 f"    public static async Task Run()\n"
