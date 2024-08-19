@@ -24,5 +24,19 @@
         "${workspaceFolder}/stage/dotnet/dotnet-sdk"
       ]
     },
+    {
+      "name": "Debug dotnet-sdk cli",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/stage/dotnet/dotnet-sdk/cli/bin/Debug/net8.0/cli.dll",
+      "args": ["PersonalAccessToken"],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "logging": {
+          "engineLogging": false,
+          "moduleLoad": false
+      }
+  }
   ]
 }

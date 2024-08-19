@@ -46,6 +46,7 @@ To install the package, you can use either of the following options:
 - Type `Install-Package GitHub.Octokit.SDK` into the Package Manager Console, or
 - Type `dotnet add ./path/to/myproject.csproj package GitHub.Octokit.SDK` in a terminal (replace `./path/to/myproject.csproj` by the path to the _*.csproj_ file you want to add the dependency)
 
+
 ### Make your first request
 
 ```csharp
@@ -53,15 +54,45 @@ using GitHub;
 using GitHub.Octokit.Client;
 using GitHub.Octokit.Client.Authentication;
 
-var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "";
-var request = RequestAdapter.Create(new TokenAuthProvider(new TokenProvider(token)));
-var gitHubClient = new GitHubClient(request);
+var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
+var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider));
+await MakeRequest(new GitHubClient(adapter));
 
-var pullRequests = await gitHubClient.Repos["octokit"]["octokit.net"].Pulls.GetAsync();
-
-foreach (var pullRequest in pullRequests)
+try
 {
-    Console.WriteLine($"#{pullRequest.Number} {pullRequest.Title}");
+	var response = await gitHubClient.Repositories.GetAsync();
+	response?.ForEach(repo => Console.WriteLine(repo.FullName));
+}
+catch (Exception e)
+{
+	Console.WriteLine(e.Message);
+}
+```
+
+#### Custom configuration for requests 
+
+```csharp
+using GitHub;
+using GitHub.Octokit.Client;
+using GitHub.Octokit.Client.Authentication;
+
+var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
+
+var adapter = new ClientFactory()
+	.WithAuthenticationProvider(new TokenAuthProvider(tokenProvider))
+	.WithUserAgent("my-app", "1.0.0")
+	.WithRequestTimeout(TimeSpan.FromSeconds(100))
+	.WithBaseUrl("https://api.github.com")
+	.Build();
+
+try
+{
+	var response = await gitHubClient.Repositories.GetAsync();
+	response?.ForEach(repo => Console.WriteLine(repo.FullName));
+}
+catch (Exception e)
+{
+	Console.WriteLine(e.Message);
 }
 ```
 
@@ -102,9 +133,7 @@ Note that the SDK **does not yet** support authenticating as the App itself and 
 
 ## Why a generated SDK?
 
-We want to...
-1.  provide 100% coverage of the API in our SDK
-1.  use this as a building block for future SDK tooling
+Please take a moment and head over to the GitHub blog to read more about the [why's and how's behind our move to Generative SDKs](https://github.blog/news-insights/product-news/our-move-to-generated-sdks/).
 
 ## Why .NET?
 

@@ -14,15 +14,47 @@ For Personal Access Token Auth you'll need the following environment variable.  
 
 public class PersonalAccessToken
 {
-    public static async Task Run()
+    public static async Task Run(string approach)
     {
-        // Personal Access Token authentication
+        switch (approach)
+        {
+            case "builder":
+                await RunWithBuilder();
+                break;
+            case "default":
+                await RunWithDefault();
+                break;
+            default:
+                Console.WriteLine("Invalid approach. Please provide 'builder' or 'default'");
+                break;
+        }
+    }
+
+    private static async Task RunWithBuilder()
+    { 
         var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
-        // The GitHub Enterprise Server URL
+        var baseUrl = Environment.GetEnvironmentVariable("GITHUB_BASE_URL") ?? "https://api.github.com";
+        
+        var adapter = new ClientFactory()
+            .WithAuthenticationProvider(new TokenAuthProvider(tokenProvider))
+            .WithUserAgent("my-app", "1.0.0")
+            .WithRequestTimeout(TimeSpan.FromSeconds(100))
+            .WithBaseUrl(baseUrl)
+            .Build();
+
+            await MakeRequest(new GitHubClient(adapter));
+    } 
+
+    private static async Task RunWithDefault()
+    {
+        var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
         var baseUrl = Environment.GetEnvironmentVariable("GITHUB_BASE_URL") ?? "https://api.github.com";
         var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider), baseUrl);
-        var gitHubClient = new GitHubClient(adapter);
+        await MakeRequest(new GitHubClient(adapter));
+    } 
 
+    private static async Task MakeRequest(GitHubClient gitHubClient)
+    {
         try
         {
             var response = await gitHubClient.Repositories.GetAsync();
