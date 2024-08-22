@@ -51,6 +51,7 @@ func run() error {
 		fileContents = fixThumbsUpThumbsDownProperties(fileContents)
 		fileContents = fixPagesPaths(fileContents)
 		fileContents = fixKiotaUntypedNodeErrors(fileContents, path)
+		fileContents = fixMissingContentTypeOnRedirect(fileContents, path)
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
 		if err != nil {
@@ -164,6 +165,36 @@ func fixKiotaUntypedNodeErrors(inputFile string, filePath string) string {
 
 	toReplace := "SendAsync<UntypedNode>(requestInfo, default, cancellationToken)"
 	replaceWith := "SendAsync<UntypedNode>(requestInfo, UntypedNode.CreateFromDiscriminatorValue, default, cancellationToken)"
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	return inputFile
+}
+
+func fixMissingContentTypeOnRedirect(inputFile string, filePath string) string {
+	if !strings.Contains(filePath, "Repos/Item/Item/Tarball/Item/WithRefItemRequestBuilder.cs") &&
+		!strings.Contains(filePath, "Repos/Item/Item/Zipball/Item/WithRefItemRequestBuilder.cs") {
+		return inputFile
+	}
+
+	toReplace := `public async Task GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)`
+	replaceWith := `public async Task<Stream?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `public async Task GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)`
+	replaceWith = `public async Task<Stream> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)`
+
+	if strings.Contains(inputFile, toReplace) {
+		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
+	}
+
+	toReplace = `await RequestAdapter.SendNoContentAsync(requestInfo, default, cancellationToken).ConfigureAwait(false);`
+	replaceWith = `return await RequestAdapter.SendPrimitiveAsync<Stream>(requestInfo, default, cancellationToken).ConfigureAwait(false);`
 
 	if strings.Contains(inputFile, toReplace) {
 		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
