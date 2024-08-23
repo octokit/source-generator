@@ -165,6 +165,7 @@ def generate_documentation(classes: List[dict], file_path: str, folder_name: str
             doc_content += f"**Example Usage:**\n"
             doc_content += (
                 f"```csharp\n"
+                f"using GitHub;\n"
                 f"using GitHub.Octokit.Client;\n"
                 f"using GitHub.Octokit.Client.Authentication;\n\n"
                 f"public class Example\n"
