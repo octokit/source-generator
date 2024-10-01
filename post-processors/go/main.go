@@ -41,7 +41,6 @@ func run() error {
 			return fmt.Errorf("input file %v must not be empty", file.Name())
 		}
 
-		fileContents = fixKiotaFileNameTypeNameError(fileContents, file.Name())
 		fileContents = fixMissingContentTypeOnRedirect(fileContents, file.Name())
 
 		err = os.WriteFile(path, []byte(fileContents), 0600)
@@ -156,22 +155,6 @@ func walkFiles(path string, info fs.FileInfo, err error) error {
 	}
 	files[path] = info
 	return nil
-}
-
-func fixKiotaFileNameTypeNameError(inputFile string, fileName string) string {
-	if !strings.Contains(fileName, "code_scanning_variant_analysis.go") {
-		return inputFile
-	}
-
-	// Kiota's generation gives the file name rather than the type name in this
-	// specific case, so this workaround fixes it.
-	toReplace := "CodeScanningVariantAnalysis_status"
-	replaceWith := "CodeScanningVariantAnalysisStatus"
-
-	if strings.Contains(inputFile, toReplace) {
-		inputFile = strings.ReplaceAll(inputFile, toReplace, replaceWith)
-	}
-	return inputFile
 }
 
 func fixMissingContentTypeOnRedirect(inputFile string, fileName string) string {
