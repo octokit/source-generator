@@ -8,7 +8,7 @@ class Program
     {
         if (args == null || args.Length == 0)
         {
-            Console.WriteLine("Please provide an argument: 'AppInstallationToken' or 'PersonalAccessToken' or 'sandbox'");
+            Console.WriteLine("Please provide an argument: 'AppInstallationToken', 'PersonalAccessToken', or 'Sandbox'");
             return;
         }
 
