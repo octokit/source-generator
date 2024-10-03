@@ -8,7 +8,7 @@ class Program
     {
         if (args == null || args.Length == 0)
         {
-            Console.WriteLine("Please provide an argument: 'AppInstallationToken' or 'PersonalAccessToken' or 'sandbox'");
+            Console.WriteLine("Please provide an argument: 'AppInstallationToken' or 'PersonalAccessToken' or 'Sandbox'");
             return;
         }
 
@@ -39,7 +39,7 @@ class Program
                 await Example.Run();
                 break;
             default:
-                Console.WriteLine("Invalid argument. Please provide 'AppInstallationToken' or 'PersonalAccessToken'");
+                Console.WriteLine("Invalid argument. Please provide 'AppInstallationToken', 'PersonalAccessToken', or 'Sandbox'");
                 break;
         }
     }
