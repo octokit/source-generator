@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Debug Go post-processing",
       "type": "go",
@@ -29,12 +30,11 @@
       "type": "coreclr",
       "request": "launch",
       "program": "${workspaceFolder}/stage/dotnet/dotnet-sdk/cli/bin/Debug/net8.0/cli.dll",
-      "args": ["PersonalAccessToken"],
+      "args": ["Sandbox"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
       "console": "internalConsole",
       "logging": {
-          "engineLogging": false,
           "moduleLoad": false
       }
   }
