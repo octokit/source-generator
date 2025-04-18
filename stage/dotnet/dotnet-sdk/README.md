@@ -55,7 +55,7 @@ using GitHub.Octokit.Client.Authentication;
 
 var tokenProvider = new TokenProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN") ?? "");
 var adapter = RequestAdapter.Create(new TokenAuthProvider(tokenProvider));
-await MakeRequest(new GitHubClient(adapter));
+var gitHubClient = new GitHubClient(adapter);
 
 try
 {
@@ -83,6 +83,8 @@ var adapter = new ClientFactory()
 	.WithRequestTimeout(TimeSpan.FromSeconds(100))
 	.WithBaseUrl("https://api.github.com")
 	.Build();
+
+var gitHubClient = new GitHubClient(adapter);
 
 try
 {

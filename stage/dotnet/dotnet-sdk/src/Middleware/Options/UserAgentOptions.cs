@@ -1,4 +1,4 @@
-// Copyright (c) GitHub 2023-2024 - Licensed as MIT.
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
 
 using Microsoft.Kiota.Abstractions;
 
@@ -7,9 +7,8 @@ namespace GitHub.Octokit.Client.Middleware.Options;
 /// <summary>
 /// Represents the user agent options for the middleware.
 /// </summary>
-public class UserAgentOptions : IRequestOption
+public sealed class UserAgentOptions : IRequestOption
 {
-
     private const string DefaultProductName = "GitHub.Octokit.dotnet-sdk";
     private const string DefaultProductVersion = "0.0.0";
 
@@ -24,6 +23,9 @@ public class UserAgentOptions : IRequestOption
     /// </summary>
     public string? ProductVersion { get; set; } = DefaultProductVersion;
 
-    public static string GetFullSDKVersion() => DefaultProductName + ":" + DefaultProductVersion;
-
+    /// <summary>
+    /// Gets the full SDK version.
+    /// </summary>
+    /// <returns>A string representation of the full SDK version.</returns>
+    public static string GetFullSDKVersion() => $"{DefaultProductName}:{DefaultProductVersion}";
 }

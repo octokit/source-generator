@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
@@ -13,6 +13,8 @@
     This is an auto-generated SDK for GitHub's REST API, built on Kiota.
     </Description>
     <Authors>GitHub</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>GitHub API Octokit dotnet-core</PackageTags>
     <RepositoryUrl>https://github.com/octokit/dotnet-sdk</RepositoryUrl>
     <PackageProjectUrl>https://github.com/octokit/dotnet-sdk</PackageProjectUrl>
@@ -27,21 +29,17 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <!-- The below NoWarn is due to Kiota generating code marked as Obsolete.
-      This is expected, but we still want to error on other warnings from analyzers. -->
-    <NoWarn>$(NoWarn);CS0618</NoWarn>
+    <!-- The below NoWarn is due to Kiota generating code marked as Obsolete or not including
+         XML comments for public members. This is expected, but we still want to error on other warnings from analyzers. -->
+    <NoWarn>$(NoWarn);CS1591;CS0618;IDE0130</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.1.2" />
-    <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Serialization.Form" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Serialization.Json" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Serialization.Multipart" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Serialization.Text" Version="1.12.4" />
-    <PackageReference Include="Microsoft.Kiota.Authentication.Azure" Version="1.12.4" />
-    <None Include="NugetREADME.md" Pack="true" PackagePath="\" />
-    <None Include="octokit.png" Pack="true" PackagePath="\" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.7.0" />
+    <PackageReference Include="Microsoft.Kiota.Bundle" Version="1.17.1" />
+    <PackageReference Include="Microsoft.Kiota.Authentication.Azure" Version="1.17.1" />
+    <None Include="NugetREADME.md" Pack="true" PackagePath="/" />
+    <None Include="octokit.png" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

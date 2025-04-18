@@ -1,8 +1,10 @@
-// Copyright (c) GitHub 2023-2024 - Licensed as MIT.
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
 
 using GitHub.Octokit.Client;
 using GitHub.Octokit.Client.Middleware;
 using Xunit;
+
+namespace Tests.Client;
 
 public class TestHandler1 : DelegatingHandler { }
 public class TestHandler2 : DelegatingHandler { }
@@ -43,6 +45,15 @@ public class ClientFactoryTests
         // Assert that the Kiota retry handler and redirect handler are present as well
         Assert.Contains(handlers, h => h is Microsoft.Kiota.Http.HttpClientLibrary.Middleware.RetryHandler);
         Assert.Contains(handlers, h => h is Microsoft.Kiota.Http.HttpClientLibrary.Middleware.RedirectHandler);
+    }
+
+    [Fact]
+    public void CreateDefaultHandlers_Returns_Unique_Instances()
+    {
+        var handlers1 = new HashSet<DelegatingHandler>(ClientFactory.CreateDefaultHandlers());
+        var handlers2 = new HashSet<DelegatingHandler>(ClientFactory.CreateDefaultHandlers());
+
+        Assert.False(handlers1.Overlaps(handlers2));
     }
 
     [Fact]

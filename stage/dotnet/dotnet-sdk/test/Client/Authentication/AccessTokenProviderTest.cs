@@ -1,8 +1,12 @@
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
+
 using System.Security.Cryptography;
 using GitHub.Octokit.Client.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;
+
+namespace Tests.Client.Authentication;
 
 public class GitHubAppTokenProviderTests
 {

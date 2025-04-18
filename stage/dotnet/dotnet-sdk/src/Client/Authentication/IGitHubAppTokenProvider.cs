@@ -1,3 +1,5 @@
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
+
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
@@ -25,7 +27,7 @@ public interface IGitHubAppTokenProvider
     /// https://docs.github.com/en/rest/apps/apps?apiVersion=2022-11-28
     /// </summary>
     /// <param name="tokenDescriptor">The token descriptor to use when creating the JWT.</param>
-    /// <returns></returns>
+    /// <returns>A JWT string that can be used for authentication.</returns>
     public string CreateJsonWebToken(SecurityTokenDescriptor tokenDescriptor);
 
     /// <summary>
@@ -33,9 +35,10 @@ public interface IGitHubAppTokenProvider
     /// to all GitHub App installation endpoints:
     /// https://docs.github.com/en/rest/authentication/endpoints-available-for-github-app-installation-access-tokens?apiVersion=2022-11-28
     /// </summary>
-    /// <param name="baseUrl"></param>
-    /// <param name="jwt"></param>
-    /// <param name="installationId"></param>
+    /// <param name="baseUrl">The base URL of the GitHub API.</param>
+    /// <param name="jwt">The JSON Web Token for authentication.</param>
+    /// <param name="installationId">The installation ID of the GitHub App.</param>
     /// <returns>An access token that can be used to authenticate to the GitHub API as an App installation.</returns>
+    /// <exception cref="Exception">Thrown when the access token cannot be retrieved.</exception>
     public Task<string> GetGitHubAccessTokenAsync(string baseUrl, string jwt, string installationId);
 }

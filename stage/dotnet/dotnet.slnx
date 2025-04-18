@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/dotnet-sdk-enterprise-cloud/">
+    <Project Path="dotnet-sdk-enterprise-cloud/cli/cli.csproj" />
+    <Project Path="dotnet-sdk-enterprise-cloud/src/GitHub.Octokit.GHEC.SDK.csproj" />
+    <Project Path="dotnet-sdk-enterprise-cloud/test/Tests.csproj" />
+  </Folder>
+  <Folder Name="/dotnet-sdk-enterprise-server/">
+    <Project Path="dotnet-sdk-enterprise-server/cli/cli.csproj" />
+    <Project Path="dotnet-sdk-enterprise-server/src/GitHub.Octokit.GHES.SDK.csproj" />
+    <Project Path="dotnet-sdk-enterprise-server/test/Tests.csproj" />
+  </Folder>
+  <Folder Name="/dotnet-sdk/">
+    <Project Path="dotnet-sdk/cli/cli.csproj" />
+    <Project Path="dotnet-sdk/src/GitHub.Octokit.SDK.csproj" />
+    <Project Path="dotnet-sdk/test/Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,8 +1,12 @@
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
+
 using System.Security.Cryptography;
 using GitHub.Octokit.Client.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Xunit;
+
+namespace Tests.Client.Authentication;
 
 public class AppInstallationTokenProviderTests
 {
@@ -102,10 +106,7 @@ public class AppInstallationTokenProviderTests
         var accessTokenField = _tokenProvider.GetType()
             .GetField("_accessToken", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        if (accessTokenField != null)
-        {
-            accessTokenField.SetValue(_tokenProvider, "existingAccessToken");
-        }
+        accessTokenField?.SetValue(_tokenProvider, "existingAccessToken");
 
         var token = await _tokenProvider.GetAuthorizationTokenAsync(requestUri);
 

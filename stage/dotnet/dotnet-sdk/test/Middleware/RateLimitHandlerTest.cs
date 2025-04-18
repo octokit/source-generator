@@ -1,14 +1,19 @@
+// Copyright (c) GitHub 2023-2025 - Licensed as MIT.
+
 using System.Net;
 using System.Net.Http.Headers;
 using GitHub.Octokit.Client.Middleware;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using Tests.Mocks;
 using Xunit;
+
+namespace Tests.Middleware;
 
 public class RateLimitHandlerTests : IDisposable
 {
-
     // paired with 200 status code
-    const string happyPathTestHeaders = @"{
+    private const string HappyPathTestHeaders = @"{
         ""Access-Control-Allow-Origin"": [
             ""*""
         ],
@@ -79,7 +84,7 @@ public class RateLimitHandlerTests : IDisposable
 }";
 
     // example primary rate-limited headers (paired with 403 status code)
-    const string primaryRateLimitHeaders = @"{
+    private const string PrimaryRateLimitHeaders = @"{
 	""Access-Control-Allow-Origin"": [
 		""*""
 	],
@@ -152,7 +157,7 @@ public class RateLimitHandlerTests : IDisposable
 }";
 
     // example secondary rate-limited headers (paired with 403 status code)
-    const string secondaryRateLimitHeaders = @"{
+    private const string SecondaryRateLimitHeaders = @"{
 	""Access-Control-Allow-Origin"": [
 		""*""
 	],
@@ -219,7 +224,7 @@ public class RateLimitHandlerTests : IDisposable
     public RateLimitHandlerTests()
     {
         _testHttpMessageHandler = new MockRateLimitHandler();
-        _rateLimitHandler = new RateLimitHandler
+        _rateLimitHandler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance)
         {
             InnerHandler = _testHttpMessageHandler
         };
@@ -238,7 +243,7 @@ public class RateLimitHandlerTests : IDisposable
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://example.org/foo");
         var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(happyPathTestHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(HappyPathTestHeaders);
 
         if (headersDictionary != null)
         {
@@ -266,7 +271,7 @@ public class RateLimitHandlerTests : IDisposable
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://example.org/foo");
         var firstResponse = new HttpResponseMessage(statusCode);
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(primaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(PrimaryRateLimitHeaders);
 
         if (headersDictionary != null)
         {
@@ -277,7 +282,7 @@ public class RateLimitHandlerTests : IDisposable
         }
 
         var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
-        this._testHttpMessageHandler.SetHttpResponse(firstResponse, expectedResponse);
+        _testHttpMessageHandler.SetHttpResponse(firstResponse, expectedResponse);
 
         var response = await _invoker.SendAsync(httpRequestMessage, new CancellationToken());
 
@@ -295,7 +300,7 @@ public class RateLimitHandlerTests : IDisposable
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://example.org/foo");
         var firstResponse = new HttpResponseMessage(statusCode);
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(secondaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(SecondaryRateLimitHeaders);
 
         if (headersDictionary != null)
         {
@@ -306,7 +311,7 @@ public class RateLimitHandlerTests : IDisposable
         }
 
         var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK);
-        this._testHttpMessageHandler.SetHttpResponse(firstResponse, expectedResponse);
+        _testHttpMessageHandler.SetHttpResponse(firstResponse, expectedResponse);
 
         var response = await _invoker.SendAsync(httpRequestMessage, new CancellationToken());
 
@@ -323,7 +328,7 @@ public class RateLimitHandlerTests : IDisposable
         var response = new HttpResponseMessage(HttpStatusCode.OK);
         var rateLimitHandlerOptions = new RateLimitHandlerOptions();
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(happyPathTestHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(HappyPathTestHeaders);
 
         if (headersDictionary != null)
         {
@@ -345,7 +350,7 @@ public class RateLimitHandlerTests : IDisposable
         var response = new HttpResponseMessage(HttpStatusCode.Forbidden);
         var rateLimitHandlerOptions = new RateLimitHandlerOptions();
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(primaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(PrimaryRateLimitHeaders);
 
 
         if (headersDictionary != null)
@@ -368,7 +373,7 @@ public class RateLimitHandlerTests : IDisposable
         var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
         var rateLimitHandlerOptions = new RateLimitHandlerOptions();
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(primaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(PrimaryRateLimitHeaders);
 
         if (headersDictionary != null)
         {
@@ -390,7 +395,7 @@ public class RateLimitHandlerTests : IDisposable
         var response = new HttpResponseMessage(HttpStatusCode.Forbidden);
         var rateLimitHandlerOptions = new RateLimitHandlerOptions();
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(secondaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(SecondaryRateLimitHeaders);
 
         if (headersDictionary != null)
         {
@@ -412,7 +417,7 @@ public class RateLimitHandlerTests : IDisposable
         var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
         var rateLimitHandlerOptions = new RateLimitHandlerOptions();
 
-        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(secondaryRateLimitHeaders);
+        var headersDictionary = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<string>>>(SecondaryRateLimitHeaders);
 
         if (headersDictionary != null)
         {
@@ -426,17 +431,15 @@ public class RateLimitHandlerTests : IDisposable
 
         Assert.Equal(RateLimitType.Secondary, result);
     }
-}
 
-// Test Specific Subclass used for testing the private internals of RateLimitHandler
-public class RateLimitHandlerSubclass : RateLimitHandler
-{
     [Fact]
     public void ParseRateLimit_EmptyHeaders_ReturnsNull()
     {
         var response = new HttpResponseMessage();
 
-        var limit = ParseRateLimit(response, DateTime.Now);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var limit = handler.ParseRateLimit(response, DateTime.Now);
 
         Assert.Null(limit);
     }
@@ -449,7 +452,9 @@ public class RateLimitHandlerSubclass : RateLimitHandler
         response.Headers.RetryAfter = new RetryConditionHeaderValue(artificialFuture);
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        var timeToWait = ParseRateLimit(response, artificialNow);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var timeToWait = handler.ParseRateLimit(response, artificialNow);
 
         Assert.Equal(1, timeToWait?.TotalHours);
     }
@@ -458,10 +463,13 @@ public class RateLimitHandlerSubclass : RateLimitHandler
     public void ParseRateLimit_WithXRateLimitResetKey_ReturnsCorrectTime()
     {
         var response = new HttpResponseMessage();
-        response.Headers.Add(XRateLimitResetKey, "946688400"); // one hour past the millenium
+
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        response.Headers.Add(RateLimitHandler.XRateLimitResetKey, "946688400"); // one hour past the millennium
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc); // 946684800 in unix epoch time
 
-        var timeToWait = ParseRateLimit(response, artificialNow);
+        var timeToWait = handler.ParseRateLimit(response, artificialNow);
 
         Assert.Equal(1, timeToWait?.TotalHours);
     }
@@ -472,7 +480,9 @@ public class RateLimitHandlerSubclass : RateLimitHandler
         var response = new HttpResponseMessage();
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        var timeToWait = ParseRetryAfterHeader(response, artificialNow);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var timeToWait = handler.ParseRetryAfterHeader(response, artificialNow);
 
         Assert.Null(timeToWait);
     }
@@ -485,7 +495,9 @@ public class RateLimitHandlerSubclass : RateLimitHandler
         response.Headers.RetryAfter = new RetryConditionHeaderValue(artificialFuture);
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        var timeToWait = ParseRetryAfterHeader(response, artificialNow);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var timeToWait = handler.ParseRetryAfterHeader(response, artificialNow);
 
         Assert.Equal(1, timeToWait?.TotalHours);
     }
@@ -494,10 +506,12 @@ public class RateLimitHandlerSubclass : RateLimitHandler
     public void ParseXRateLimitReset_NullXRateLimitResetKey_ReturnsNull()
     {
         var response = new HttpResponseMessage();
-        response.Headers.Add(XRateLimitResetKey, "");
+        response.Headers.Add(RateLimitHandler.XRateLimitResetKey, "");
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        var timeToWait = ParseXRateLimitReset(response, artificialNow);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var timeToWait = handler.ParseXRateLimitReset(response, artificialNow);
 
         Assert.Null(timeToWait);
     }
@@ -506,10 +520,12 @@ public class RateLimitHandlerSubclass : RateLimitHandler
     public void ParseXRateLimitReset_WithXRateLimitResetKey_ReturnsCorrectTime()
     {
         var response = new HttpResponseMessage();
-        response.Headers.Add(XRateLimitResetKey, "946688400"); // one hour past the millenium
+        response.Headers.Add(RateLimitHandler.XRateLimitResetKey, "946688400"); // one hour past the millennium
         var artificialNow = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc); // 946684800 in unix epoch time
 
-        var timeToWait = ParseXRateLimitReset(response, artificialNow);
+        var handler = new RateLimitHandler(NullLogger<RateLimitHandler>.Instance);
+
+        var timeToWait = handler.ParseXRateLimitReset(response, artificialNow);
 
         Assert.Equal(1, timeToWait?.TotalHours);
     }
